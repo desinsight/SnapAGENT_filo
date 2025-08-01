@@ -11,10 +11,14 @@ export default defineConfig({
   root: path.join(__dirname, 'renderer'),
   server: {
     port: 5174,
+    strictPort: true,
+    host: true,
     proxy: {
       '/api': {
         target: 'http://localhost:5001',
         changeOrigin: true,
+        secure: false,
+        ws: true,
         timeout: 10000
       }
     }

@@ -13,7 +13,7 @@ const IndexManageModal = ({ isOpen, onClose, onIndexComplete }) => {
   const loadIndexInfo = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/info?user_id=test');
+      const response = await fetch('/api/tools/ultra-fast-search/info?user_id=test');
       const data = await response.json();
       
       if (data.success) {
@@ -84,7 +84,7 @@ const IndexManageModal = ({ isOpen, onClose, onIndexComplete }) => {
           .filter(item => selectedItems.has(item.path))
           .map(item => item.path);
 
-        const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/remove?user_id=test', {
+        const response = await fetch('/api/tools/ultra-fast-search/remove?user_id=test', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ const IndexManageModal = ({ isOpen, onClose, onIndexComplete }) => {
 
     if (confirm(`"${item.path}" 경로의 인덱스를 다시 생성하시겠습니까?`)) {
       try {
-        const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/index?user_id=test', {
+        const response = await fetch('/api/tools/ultra-fast-search/index?user_id=test', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ const IndexManageModal = ({ isOpen, onClose, onIndexComplete }) => {
 
     if (confirm('현재 인덱스를 파일로 저장하시겠습니까?')) {
       try {
-        const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/save?user_id=test', {
+        const response = await fetch('/api/tools/ultra-fast-search/save?user_id=test', {
           method: 'POST',
         });
 
@@ -171,7 +171,7 @@ const IndexManageModal = ({ isOpen, onClose, onIndexComplete }) => {
           const result = await window.electronAPI.selectFolder();
           if (result.canceled) return;
           
-          const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/load?user_id=test', {
+          const response = await fetch('/api/tools/ultra-fast-search/load?user_id=test', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

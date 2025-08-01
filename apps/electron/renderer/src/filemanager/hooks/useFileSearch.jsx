@@ -30,7 +30,7 @@ const useFileSearch = () => {
   const [searchHistory, setSearchHistory] = useState([]);
 
   // API 기본 URL
-  const API_BASE_URL = 'http://localhost:5000/api/tools/ultra-fast-search';
+  const API_BASE_URL = '/api/tools/ultra-fast-search';
 
   /**
    * 검색 파라미터 업데이트

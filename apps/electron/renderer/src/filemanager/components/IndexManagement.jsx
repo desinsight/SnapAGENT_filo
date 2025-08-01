@@ -66,7 +66,7 @@ const IndexManagement = ({
   // 인덱싱 상태 조회
   const checkIndexingStatus = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/status');
+      const response = await fetch('/api/tools/ultra-fast-search/status');
       const data = await response.json();
       console.log('📊 상태 조회 응답:', data);
       
@@ -130,7 +130,7 @@ const IndexManagement = ({
   const handlePauseIndexing = async () => {
     try {
       console.log('🔄 일시정지 API 호출 중...');
-      const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/pause', {
+      const response = await fetch('/api/tools/ultra-fast-search/pause', {
         method: 'POST'
       });
       const data = await response.json();
@@ -157,7 +157,7 @@ const IndexManagement = ({
   const handleResumeIndexing = async () => {
     try {
       console.log('▶️ 재개 API 호출 중...');
-      const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/resume', {
+      const response = await fetch('/api/tools/ultra-fast-search/resume', {
         method: 'POST'
       });
       const data = await response.json();
@@ -185,7 +185,7 @@ const IndexManagement = ({
     if (confirm('인덱싱을 취소하시겠습니까?')) {
       try {
         console.log('❌ 취소 API 호출 중...');
-        const response = await fetch('http://localhost:5000/api/tools/ultra-fast-search/cancel', {
+        const response = await fetch('/api/tools/ultra-fast-search/cancel', {
           method: 'POST'
         });
         const data = await response.json();

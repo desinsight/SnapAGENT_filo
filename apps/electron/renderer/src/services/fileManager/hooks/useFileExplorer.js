@@ -89,7 +89,7 @@ export const useFileExplorer = () => {
       } else {
         // 웹 환경에서는 Web API 서버 사용
         try {
-          const response = await fetch(`http://localhost:5000/api/files?path=${encodeURIComponent(path)}`);
+          const response = await fetch(`/api/files?path=${encodeURIComponent(path)}`);
           if (response.ok) {
             filesData = await response.json();
           } else {
@@ -569,7 +569,7 @@ export const useFileExplorer = () => {
           }
         } else {
           try {
-            const response = await fetch(`http://localhost:5000/api/files?path=${encodeURIComponent(dirPath)}`);
+            const response = await fetch(`/api/files?path=${encodeURIComponent(dirPath)}`);
             if (response.ok) {
               filesData = await response.json();
             } else {

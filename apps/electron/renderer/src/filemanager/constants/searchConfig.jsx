@@ -4,7 +4,7 @@
 
 // API 엔드포인트
 export const API_ENDPOINTS = {
-  BASE_URL: 'http://localhost:5000/api/tools/ultra-fast-search',
+  BASE_URL: '/api/tools/ultra-fast-search',
   INDEX: '/index',
   SAVE: '/save',
   LOAD: '/load',

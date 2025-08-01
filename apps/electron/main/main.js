@@ -12,6 +12,9 @@ const __dirname = path.dirname(__filename);
 let mainWindow;
 const isDev = !app.isPackaged;
 
+// Electron 보안 권장사항
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -26,8 +29,9 @@ function createWindow() {
       webSecurity: true,
       preload: path.join(__dirname, 'preload.js')
     },
-    titleBarStyle: 'hiddenInset',
-    show: false
+    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
+    show: false,
+    icon: process.platform === 'linux' ? path.join(__dirname, '../build/icon.png') : undefined
   });
 
   // 개발 환경에서는 vite 서버, 프로덕션에서는 빌드된 파일
@@ -35,7 +39,22 @@ function createWindow() {
     ? 'http://localhost:5174' 
     : `file://${path.join(__dirname, '../renderer/dist/index.html')}`;
 
-  mainWindow.loadURL(startUrl);
+  // 개발 서버가 준비될 때까지 재시도
+  const loadApp = async () => {
+    try {
+      await mainWindow.loadURL(startUrl);
+    } catch (error) {
+      console.log('Failed to load app, retrying...', error.message);
+      if (isDev) {
+        // 개발 환경에서는 서버가 시작될 때까지 재시도
+        setTimeout(loadApp, 1000);
+      } else {
+        console.error('Failed to load app:', error);
+      }
+    }
+  };
+
+  loadApp();
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
@@ -44,12 +63,33 @@ function createWindow() {
     }
   });
 
+  // 에러 핸들링
+  mainWindow.webContents.on('crashed', (event, killed) => {
+    console.error('Renderer process crashed:', killed);
+  });
+
+  mainWindow.webContents.on('unresponsive', () => {
+    console.error('Renderer process is unresponsive');
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
 
-app.whenReady().then(createWindow);
+// GPU 가속 비활성화 (안정성 향상)
+app.disableHardwareAcceleration();
+
+// 앱 준비 완료 시 창 생성
+app.whenReady().then(() => {
+  createWindow();
+  
+  // 프로토콜 처리
+  app.on('open-url', (event, url) => {
+    event.preventDefault();
+    // URL 스킴 처리 로직
+  });
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

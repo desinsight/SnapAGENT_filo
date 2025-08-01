@@ -8,7 +8,7 @@
 
 // MongoDB 사용하므로 목업 데이터 제거
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 const REQUEST_TIMEOUT = 10000; // 15초 → 10초로 감소
 const MAX_RETRIES = 2; // 3 → 2로 감소
 

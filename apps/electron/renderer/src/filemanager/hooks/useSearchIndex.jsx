@@ -19,7 +19,7 @@ const useSearchIndex = (onIndexComplete) => {
   const [isIndexing, setIsIndexing] = useState(false);
 
   // API 기본 URL
-  const API_BASE_URL = 'http://localhost:5000/api/tools/ultra-fast-search';
+  const API_BASE_URL = '/api/tools/ultra-fast-search';
 
   /**
    * 기존 인덱스 상태 확인 및 로드

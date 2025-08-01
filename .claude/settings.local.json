@@ -13,7 +13,9 @@
       "Bash(ls:*)",
       "Bash(pkill:*)",
       "Bash(true)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(electron:*)",
+      "Bash(npx electron:*)"
     ],
     "deny": []
   }
