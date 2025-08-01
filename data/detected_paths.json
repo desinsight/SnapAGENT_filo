@@ -1,0 +1,128 @@
+{
+  "detectedAt": 1751745017048,
+  "platform": "win32",
+  "username": "hki",
+  "paths": {
+    "desktop": [
+      {
+        "path": "C:\\Users\\hki\\Desktop",
+        "source": "standard",
+        "detectedAt": 1751745017045,
+        "language": "en"
+      }
+    ],
+    "documents": [
+      {
+        "path": "C:\\Users\\hki\\Documents",
+        "source": "standard",
+        "detectedAt": 1751745017045,
+        "language": "en"
+      }
+    ],
+    "downloads": [
+      {
+        "path": "C:\\Users\\hki\\Downloads",
+        "source": "standard",
+        "detectedAt": 1751745017045,
+        "language": "en"
+      }
+    ],
+    "pictures": [
+      {
+        "path": "C:\\Users\\hki\\Pictures",
+        "source": "standard",
+        "detectedAt": 1751745017045,
+        "language": "en"
+      }
+    ],
+    "music": [
+      {
+        "path": "C:\\Users\\hki\\Music",
+        "source": "standard",
+        "detectedAt": 1751745017046,
+        "language": "en"
+      }
+    ],
+    "videos": [
+      {
+        "path": "C:\\Users\\hki\\Videos",
+        "source": "standard",
+        "detectedAt": 1751745017046,
+        "language": "en"
+      }
+    ],
+    "kakao_received": [
+      {
+        "path": "C:\\Users\\hki\\Documents\\카카오톡 받은 파일",
+        "source": "kakao",
+        "detectedAt": 1751745017048,
+        "language": "ko"
+      }
+    ]
+  },
+  "summary": {
+    "desktop": {
+      "count": 1,
+      "languages": [
+        "en"
+      ],
+      "sources": [
+        "standard"
+      ]
+    },
+    "documents": {
+      "count": 1,
+      "languages": [
+        "en"
+      ],
+      "sources": [
+        "standard"
+      ]
+    },
+    "downloads": {
+      "count": 1,
+      "languages": [
+        "en"
+      ],
+      "sources": [
+        "standard"
+      ]
+    },
+    "pictures": {
+      "count": 1,
+      "languages": [
+        "en"
+      ],
+      "sources": [
+        "standard"
+      ]
+    },
+    "music": {
+      "count": 1,
+      "languages": [
+        "en"
+      ],
+      "sources": [
+        "standard"
+      ]
+    },
+    "videos": {
+      "count": 1,
+      "languages": [
+        "en"
+      ],
+      "sources": [
+        "standard"
+      ]
+    },
+    "kakao_received": {
+      "count": 1,
+      "languages": [
+        "ko"
+      ],
+      "sources": [
+        "kakao"
+      ]
+    }
+  }
+}

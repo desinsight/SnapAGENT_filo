@@ -1,0 +1,76 @@
+{
+  "test_user_001": [
+    {
+      "input": "카카오톡 받은 파일에 뭐있어?",
+      "intent": {
+        "intent": "kakao_received",
+        "confidence": 0.95,
+        "paths": [
+          "Documents/카카오톡 받은 파일",
+          "Documents/KakaoTalk Received Files"
+        ],
+        "source": "global_pattern"
+      },
+      "result": {
+        "success": true
+      },
+      "timestamp": 1751740575907,
+      "mentionedPaths": [
+        "Documents/카카오톡 받은 파일",
+        "Documents/KakaoTalk Received Files"
+      ]
+    },
+    {
+      "input": "바탕화면에 메모장 파일로 저장해줘",
+      "intent": {
+        "confidence": 0,
+        "paths": []
+      },
+      "result": {
+        "success": true
+      },
+      "timestamp": 1751740575907,
+      "mentionedPaths": []
+    },
+    {
+      "input": "다운로드 폴더 확인해줘",
+      "intent": {
+        "intent": "downloads",
+        "confidence": 0.7999999999999999,
+        "paths": [
+          "Downloads",
+          "다운로드"
+        ],
+        "source": "global_pattern"
+      },
+      "result": {
+        "success": true
+      },
+      "timestamp": 1751740575908,
+      "mentionedPaths": [
+        "Downloads",
+        "다운로드"
+      ]
+    },
+    {
+      "input": "휴지통 비워줘",
+      "intent": {
+        "intent": "recycle_bin",
+        "confidence": 0.8999999999999999,
+        "paths": [
+          "$Recycle.Bin",
+          "Recycle Bin"
+        ],
+        "source": "global_pattern"
+      },
+      "result": {
+        "success": true
+      },
+      "timestamp": 1751740575908,
+      "mentionedPaths": [
+        "$Recycle.Bin",
+        "Recycle Bin"
+      ]
+    }
+  ]
+}

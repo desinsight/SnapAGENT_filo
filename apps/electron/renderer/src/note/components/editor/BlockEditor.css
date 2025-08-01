@@ -1,0 +1,433 @@
+/**
+ * 블록 에디터 스타일
+ */
+
+/* 플레이스홀더 스타일 */
+.block-wrapper [contenteditable="true"]:empty::before {
+  content: attr(data-placeholder);
+  color: rgb(156, 163, 175); /* text-gray-400 */
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+}
+
+/* contenteditable 기본 스타일 */
+[contenteditable="true"] {
+  outline: none;
+  border: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: normal;
+  cursor: text !important; /* 텍스트 커서 강제 설정 */
+}
+
+/* ProseMirror 에디터 커서 스타일 */
+.prosemirror-text-editor {
+  cursor: text !important;
+}
+
+.prosemirror-text-editor:focus {
+  cursor: text !important;
+}
+
+/* 블록 콘텐츠 영역 커서 스타일 */
+.block-content {
+  cursor: text;
+}
+
+.block-content:hover {
+  cursor: text;
+}
+
+/* 텍스트 블록 커서 스타일 */
+.text-block {
+  cursor: text;
+}
+
+/* 리스트 블록 CSS Counter 스타일 */
+.blocks-container {
+  counter-reset: numbered-list;
+}
+
+/* 번호 리스트 카운터 */
+.list-block.numberedList {
+  counter-increment: numbered-list;
+}
+
+.list-block.numberedList > div:first-child::before {
+  content: counter(numbered-list) ".";
+  font-weight: 500;
+  color: #6b7280;
+  margin-right: 0.5em;
+  display: inline-block;
+  min-width: 1.5em;
+}
+
+/* 불릿 리스트 스타일 */
+.list-block.bulletList > div:first-child {
+  color: #6b7280;
+}
+
+/* 체크리스트 스타일 */
+.list-block.checkList > div:first-child {
+  cursor: pointer;
+  user-select: none;
+}
+
+.list-block.checkList > div:first-child:hover {
+  color: #3b82f6;
+}
+
+/* 드래그 성능 최적화 */
+.transform-gpu {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 드래그 미리보기 최적화 */
+.drag-preview {
+  contain: layout style paint;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.text-block:hover {
+  cursor: text;
+}
+
+.dark .block-wrapper [contenteditable="true"]:empty::before {
+  color: rgb(107, 114, 128); /* dark:text-gray-500 */
+}
+
+/* 드래그 프리뷰 스타일 */
+.drag-preview {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  opacity: 0.9;
+  transform: rotate(5deg);
+}
+
+.dark .drag-preview {
+  background: rgb(31, 41, 55);
+  border-color: rgb(75, 85, 99);
+}
+
+/* 블록 에디터 전체 스타일 */
+.block-editor {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* 성능 최적화 */
+  contain: layout style paint;
+  will-change: auto;
+}
+
+/* 포커스 표시 개선 */
+.block-editor:focus {
+  outline: 2px solid rgb(59, 130, 246);
+  outline-offset: 2px;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  .block-editor {
+    border: 2px solid currentColor;
+  }
+}
+
+/* 블록 호버 효과 */
+.block-wrapper:hover {
+  position: relative;
+}
+
+.block-wrapper:hover .drag-handle,
+.block-wrapper:hover .menu-button {
+  opacity: 1;
+}
+
+/* 블록 간격 조정 */
+.block-wrapper {
+  margin-bottom: 2px;
+  padding: 4px 0;
+}
+
+.blocks-container .block-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+/* 드래그 핸들 스타일 */
+.drag-handle {
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.drag-handle:hover {
+  background-color: rgb(243, 244, 246);
+}
+
+.dark .drag-handle:hover {
+  background-color: rgb(55, 65, 81);
+}
+
+/* 메뉴 버튼 스타일 */
+.menu-button {
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.menu-button:hover {
+  background-color: rgb(243, 244, 246);
+}
+
+.dark .menu-button:hover {
+  background-color: rgb(55, 65, 81);
+}
+
+/* 선택된 블록 스타일 */
+.block-wrapper.selected {
+  background-color: rgba(156, 163, 175, 0.1);
+  border: none;
+}
+
+.dark .block-wrapper.selected {
+  background-color: rgba(156, 163, 175, 0.15);
+  border: none;
+}
+
+/* 포커스된 블록 스타일 */
+.block-wrapper.focused {
+  border-color: rgb(147, 197, 253);
+}
+
+.dark .block-wrapper.focused {
+  border-color: rgb(59, 130, 246);
+}
+
+/* 드래그 오버 효과 */
+.block-wrapper.drag-over {
+  background-color: transparent;
+  border: 1px solid rgba(168, 85, 247, 0.1);
+}
+
+.dark .block-wrapper.drag-over {
+  background-color: transparent;
+  border: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+/* 코드 블록 스타일 */
+.code-block {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', monospace;
+}
+
+.code-block pre {
+  font-family: inherit;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+}
+
+/* 인용 블록 스타일 */
+.quote-block {
+  border-left: 4px solid rgb(209, 213, 219);
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+.dark .quote-block {
+  border-left-color: rgb(75, 85, 99);
+}
+
+/* 리스트 블록 스타일 */
+.list-block .list-marker {
+  user-select: none;
+  min-width: 1.5rem;
+  display: inline-block;
+}
+
+/* 이미지 블록 스타일 */
+.image-block img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 구분선 블록 스타일 */
+.divider-block {
+  margin: 0.5rem 0;
+}
+
+/* 슬래시 명령어 메뉴 스타일 */
+.slash-command-menu {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(209, 213, 219) transparent;
+}
+
+.slash-command-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.slash-command-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slash-command-menu::-webkit-scrollbar-thumb {
+  background-color: rgb(209, 213, 219);
+  border-radius: 3px;
+}
+
+.dark .slash-command-menu::-webkit-scrollbar-thumb {
+  background-color: rgb(75, 85, 99);
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.block-menu,
+.slash-command-menu,
+.block-selector {
+  animation: fadeIn 0.15s ease-out;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .block-editor {
+    padding: 1rem;
+  }
+  
+  .drag-handle,
+  .menu-button {
+    opacity: 1; /* 모바일에서는 항상 표시 */
+  }
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+  .block-wrapper,
+  .drag-handle,
+  .menu-button,
+  .block-menu,
+  .slash-command-menu {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  .block-wrapper {
+    border-width: 2px;
+  }
+  
+  .block-wrapper.selected {
+    border: 1px solid rgba(168, 85, 247, 0.4);
+  }
+  
+  .drag-handle,
+  .menu-button {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Flexbox 기반 열 블록 스타일 */
+.column-group {
+  display: flex;
+  gap: 8px;
+  min-height: 40px;
+  align-items: flex-start;
+}
+
+.column-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+
+/* 열 블록 내부 블록 스타일 */
+.column-container .block-wrapper {
+  margin-bottom: 0;
+}
+
+/* 열 블록 내부 리스트 카운터 리셋 */
+.column-container {
+  counter-reset: numbered-list;
+}
+
+/* 열 리사이저 스타일 */
+.column-resizer {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+  user-select: none;
+}
+
+.column-resizer::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.column-resizer:hover::before {
+  background-color: rgb(59, 130, 246);
+  opacity: 0.5;
+}
+
+.column-resizer:active::before {
+  background-color: rgb(59, 130, 246);
+  opacity: 1;
+}
+
+/* 리사이징 중 커서 변경 */
+body.resizing {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+body.resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+/* 블록 선택(드래그) 중에는 커서/선택 방지 - 노션 UX와 동일하게 */
+.block-editor.is-selecting,
+.block-editor.is-selecting * {
+  cursor: default !important;
+  user-select: none !important;
+}

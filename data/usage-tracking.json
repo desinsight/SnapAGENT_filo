@@ -1,0 +1,11 @@
+{
+  "daily": {
+    "test-user:filesystem:2025-07-03": 3,
+    "integration-test-user:filesystem:2025-07-03": 2,
+    "integration-test-user:notes:2025-07-03": 1,
+    "perf-test-user:filesystem:2025-07-03": 5
+  },
+  "monthly": {},
+  "lastReset": "2025-07-03T14:10:49.314Z",
+  "lastUpdated": "2025-07-03T18:25:36.067Z"
+}

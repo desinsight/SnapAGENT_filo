@@ -1,0 +1,11 @@
+{
+  "test_user_001": {
+    "kakao_received": {
+      "correctPath": "C:\\Users\\test\\Documents\\카카오톡 받은 파일",
+      "timestamp": 1751740575908,
+      "originalPaths": [
+        "Downloads"
+      ]
+    }
+  }
+}

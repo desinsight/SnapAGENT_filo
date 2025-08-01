@@ -1,0 +1,1347 @@
+{
+  "metadata": {
+    "createdAt": 1751912228604,
+    "lastUpdated": 1753871007714,
+    "totalAnalyses": 4,
+    "totalFiles": 4,
+    "supportedFormats": [
+      "txt",
+      "docx",
+      "xlsx",
+      "pptx",
+      "pdf",
+      "hwp",
+      "csv",
+      "json",
+      "xml",
+      "yaml"
+    ]
+  },
+  "analyses": {
+    "file_e80e38bff7c1e0ed5a76057f3aea4f92_1753695657557": {
+      "filePath": "N:\\개인\\버텍스\\project\\1279.01-Orix-압구정점 인테리어공사\\문서\\회의록_의제\\20131115-신규 오릭스저축은행 협력업체(금고) 회의록.hwp",
+      "fileExt": "hwp",
+      "fileSize": 30720,
+      "analysisResult": {
+        "success": true,
+        "path": "N:\\개인\\버텍스\\project\\1279.01-Orix-압구정점 인테리어공사\\문서\\회의록_의제\\20131115-신규 오릭스저축은행 협력업체(금고) 회의록.hwp",
+        "extension": ".hwp",
+        "size": 30720,
+        "modified": "2013-11-15T09:02:37.000Z",
+        "analysis": {
+          "type": "hwp",
+          "content": "< ><>\r\n<PROJ. NO.><0000.00><PROJ. NAME><00 저축은행><PM><>\r\n<일  자><2013. 11. 15.><참석자><신성금고 (금고제작설치전문업체) 김종기 전무  Ver-TEX  김선화 과장 김지영 사원><><>\r\n<시  간><오후 04:00>\r\n<장  소><버텍스 회의실>\r\n<작성자><김선화>\r\n<배부처><>\r\n<제 목>< 00저축은행 금고 설치 제원 및 시스템 관련 사항 >\r\n\r\n[ 주요내용 ]\r\n\r\n제품의 타입 및 제원\r\n\r\na, 타입 : 슬라이딩\r\n-SIZE : 2000mm X 2200mm\r\n-W : 450mm\r\n-무게 : 850kg\r\n-비용 : 1210만원 (부가세 포함)\r\n-재고 있음.\r\n-제품 반입 방법 : 분해 가능함. 자재들을 분리 반입하여 현장 조립. (별도의 반입기기(예;크레인) 필요 없음.)\r\n\r\nb, 타입 : 여닫이 (UL 기준)\r\n-SIZE : 1000mm X 2000mm\r\n-W : 300mm or 400mm\r\n-무게 : 1200kg\r\n-비용 : 1980만원 (부가세 포함)\r\n-제작 소요 기간 : 15일\r\n-제품 반입 방법 : 제품 사이즈 만큼 현장에 개구부 폭을 확보하여 크레인을 이용해 현장 반입\r\n\r\nc, 타입 : 여닫이 (약식)\r\n-SIZE : 1000mm X 2000mm\r\n-W : 200mm or 250mm\r\n-무게 : 400kg ~ 500kg\r\n-비용 : 660만원 ~880만원 (부가세 포함)\r\n-제작 소요 기간 : 15일\r\n-제품 반입 방법 : 제품 사이즈 만큼 현장에 개구부 폭을 확보하여 크레인을 이용해 현장 반입\r\n-보완적인 측면이나 제품의 사양 차이는 크게 없다고 함..... (김종기 전무님의 말에 의하면...)\r\n\r\n설계 과정\r\n\r\n-기본계획완료\r\n-기본계획도면 버텍스→신성금고 \r\n-기본계획도면을 바탕으로 금고실 가설계 (제원, 무게, 마감, 비용, 기타 등등)\r\n-금고실 가설계 자료 신성금고→버텍스\r\n-금고실 가설계 자료를 바탕으로 인테리어(마감 및 시공), 구조(구조보강여부), 기타(기계, 전기)사항 검토\r\n *시공사",
+          "summary": {
+            "pages": 0,
+            "lines": 46,
+            "characters": 1020,
+            "words": 214,
+            "paragraphs": 39,
+            "encoding": "utf-8",
+            "fileSize": 30720,
+            "fileSizeFormatted": "30 KB"
+          },
+          "analysis": {
+            "language": "ko",
+            "keywords": [
+              "신성금고",
+              "버텍스",
+              "size",
+              "2000mm",
+              "부가세",
+              "금고실",
+              "가설계",
+              "proj",
+              "김종기",
+              "김선화"
+            ],
+            "sentiment": "neutral",
+            "readability": 49,
+            "confidence": 0.9,
+            "extractionMethod": "ole-parser"
+          },
+          "metadata": {
+            "documentProperties": {
+              "title": "20131115-신규 오릭스저축은행 협력업체(금고) 회의록",
+              "author": "",
+              "subject": "",
+              "created": "2022-06-21T18:22:24.000Z",
+              "modified": "2013-11-15T09:02:37.000Z",
+              "size": 30720
+            },
+            "hasImages": false,
+            "hasTables": false,
+            "hasCharts": false,
+            "textExtraction": "ole-parser",
+            "structure": {
+              "pages": 0,
+              "sections": 0,
+              "paragraphs": 39,
+              "lines": 46,
+              "characters": 1020,
+              "words": 214,
+              "hasHeaders": false,
+              "hasFooters": false,
+              "hasPageNumbers": true,
+              "hasTableOfContents": false,
+              "hasIndex": false,
+              "layout": {
+                "orientation": "portrait",
+                "pageSize": "A4",
+                "margins": {}
+              }
+            },
+            "objects": {
+              "images": [],
+              "tables": [],
+              "charts": [],
+              "shapes": [],
+              "equations": [],
+              "controls": [],
+              "totalObjects": 0
+            },
+            "warnings": [],
+            "version": "OLE Compound File",
+            "compression": false,
+            "encryption": false
+          }
+        },
+        "fileInfo": {
+          "size": 30720,
+          "modified": "2013-11-15T09:02:37.000Z",
+          "created": "2022-06-21T18:22:24.000Z"
+        },
+        "analysisDuration": 9412,
+        "content": "< ><>\r\n<PROJ. NO.><0000.00><PROJ. NAME><00 저축은행><PM><>\r\n<일  자><2013. 11. 15.><참석자><신성금고 (금고제작설치전문업체) 김종기 전무  Ver-TEX  김선화 과장 김지영 사원><><>\r\n<시  간><오후 04:00>\r\n<장  소><버텍스 회의실>\r\n<작성자><김선화>\r\n<배부처><>\r\n<제 목>< 00저축은행 금고 설치 제원 및 시스템 관련 사항 >\r\n\r\n[ 주요내용 ]\r\n\r\n제품의 타입 및 제원\r\n\r\na, 타입 : 슬라이딩\r\n-SIZE : 2000mm X 2200mm\r\n-W : 450mm\r\n-무게 : 850kg\r\n-비용 : 1210만원 (부가세 포함)\r\n-재고 있음.\r\n-제품 반입 방법 : 분해 가능함. 자재들을 분리 반입하여 현장 조립. (별도의 반입기기(예;크레인) 필요 없음.)\r\n\r\nb, 타입 : 여닫이 (UL 기준)\r\n-SIZE : 1000mm X 2000mm\r\n-W : 300mm or 400mm\r\n-무게 : 1200kg\r\n-비용 : 1980만원 (부가세 포함)\r\n-제작 소요 기간 : 15일\r\n-제품 반입 방법 : 제품 사이즈 만큼 현장에 개구부 폭을 확보하여 크레인을 이용해 현장 반입\r\n\r\nc, 타입 : 여닫이 (약식)\r\n-SIZE : 1000mm X 2000mm\r\n-W : 200mm or 250mm\r\n-무게 : 400kg ~ 500kg\r\n-비용 : 660만원 ~880만원 (부가세 포함)\r\n-제작 소요 기간 : 15일\r\n-제품 반입 방법 : 제품 사이즈 만큼 현장에 개구부 폭을 확보하여 크레인을 이용해 현장 반입\r\n-보완적인 측면이나 제품의 사양 차이는 크게 없다고 함..... (김종기 전무님의 말에 의하면...)\r\n\r\n설계 과정\r\n\r\n-기본계획완료\r\n-기본계획도면 버텍스→신성금고 \r\n-기본계획도면을 바탕으로 금고실 가설계 (제원, 무게, 마감, 비용, 기타 등등)\r\n-금고실 가설계 자료 신성금고→버텍스\r\n-금고실 가설계 자료를 바탕으로 인테리어(마감 및 시공), 구조(구조보강여부), 기타(기계, 전기)사항 검토\r\n *시공사",
+        "keywords": [
+          "신성금고",
+          "버텍스",
+          "size",
+          "2000mm",
+          "부가세",
+          "금고실",
+          "가설계",
+          "proj",
+          "김종기",
+          "김선화"
+        ],
+        "documentType": "hwp",
+        "contentCategory": "general",
+        "language": "ko",
+        "sentiment": "neutral",
+        "readability": 49
+      },
+      "analyzedAt": 1753695657557,
+      "analysisDuration": 9412
+    },
+    "file_59739e46ce776c18bfb363f8c6abb869_1753706180544": {
+      "filePath": "N:\\개인\\버텍스\\project\\1114.02_성북동 A동 인테리어공사\\문서\\회의록_의제\\140318[현장] 건축주 미팅.hwp",
+      "fileExt": "hwp",
+      "fileSize": 18432,
+      "analysisResult": {
+        "success": true,
+        "path": "N:\\개인\\버텍스\\project\\1114.02_성북동 A동 인테리어공사\\문서\\회의록_의제\\140318[현장] 건축주 미팅.hwp",
+        "extension": ".hwp",
+        "size": 18432,
+        "modified": "2014-03-18T11:45:46.000Z",
+        "analysis": {
+          "type": "hwp",
+          "content": "< ><>\r\n<PROJ. NO.><1114.02><PROJ. NAME><성북동 A동 인테리어 공사><PM><이준혁 소장 / 건축주>\r\n<일  자><2104.03.18.><참석자><건축주 외   3명(이준혁 소장, 강영희 과장, 기호율 디자이너)  ><><>\r\n<시  간><7시 00분>\r\n<장  소><성북동 330-467 [현장]>\r\n<작성자><기호율>\r\n<배부처><>\r\n<제 목>< 내부 리모델링 공사 회의>\r\n\r\n[ 주요내용 ]\r\n-스위치 프린트 글자 타입으로 요청.\r\n-도어 레버 디자인 검토.\r\n-도어 락 [삼성 D500] 계열 디자인 검토. (색상:SILVER)\r\n-지상 1층 보조 주방 수평 검토.\r\n-지상 1층 보조 주방 가구 도어 검토.\r\n-지상 2층 가족실 금속 난간 철거.\r\n-지상 2층 화장실 슬림텍 타일 코킹.",
+          "summary": {
+            "pages": 0,
+            "lines": 17,
+            "characters": 409,
+            "words": 81,
+            "paragraphs": 16,
+            "encoding": "utf-8",
+            "fileSize": 18432,
+            "fileSizeFormatted": "18 KB"
+          },
+          "analysis": {
+            "language": "ko",
+            "keywords": [
+              "proj",
+              "성북동",
+              "이준혁",
+              "건축주",
+              "기호율",
+              "디자인",
+              "330",
+              "467",
+              "1114",
+              "2104"
+            ],
+            "sentiment": "neutral",
+            "readability": 67,
+            "confidence": 0.9,
+            "extractionMethod": "ole-parser"
+          },
+          "metadata": {
+            "documentProperties": {
+              "title": "140318[현장] 건축주 미팅",
+              "author": "",
+              "subject": "",
+              "created": "2022-06-21T18:05:43.000Z",
+              "modified": "2014-03-18T11:45:46.000Z",
+              "size": 18432
+            },
+            "hasImages": false,
+            "hasTables": false,
+            "hasCharts": false,
+            "textExtraction": "ole-parser",
+            "structure": {
+              "pages": 0,
+              "sections": 0,
+              "paragraphs": 16,
+              "lines": 17,
+              "characters": 409,
+              "words": 81,
+              "hasHeaders": false,
+              "hasFooters": false,
+              "hasPageNumbers": true,
+              "hasTableOfContents": false,
+              "hasIndex": false,
+              "layout": {
+                "orientation": "portrait",
+                "pageSize": "A4",
+                "margins": {}
+              }
+            },
+            "objects": {
+              "images": [],
+              "tables": [],
+              "charts": [],
+              "shapes": [],
+              "equations": [],
+              "controls": [],
+              "totalObjects": 0
+            },
+            "warnings": [],
+            "version": "OLE Compound File",
+            "compression": false,
+            "encryption": false
+          }
+        },
+        "fileInfo": {
+          "size": 18432,
+          "modified": "2014-03-18T11:45:46.000Z",
+          "created": "2022-06-21T18:05:43.000Z"
+        },
+        "analysisDuration": 978,
+        "content": "< ><>\r\n<PROJ. NO.><1114.02><PROJ. NAME><성북동 A동 인테리어 공사><PM><이준혁 소장 / 건축주>\r\n<일  자><2104.03.18.><참석자><건축주 외   3명(이준혁 소장, 강영희 과장, 기호율 디자이너)  ><><>\r\n<시  간><7시 00분>\r\n<장  소><성북동 330-467 [현장]>\r\n<작성자><기호율>\r\n<배부처><>\r\n<제 목>< 내부 리모델링 공사 회의>\r\n\r\n[ 주요내용 ]\r\n-스위치 프린트 글자 타입으로 요청.\r\n-도어 레버 디자인 검토.\r\n-도어 락 [삼성 D500] 계열 디자인 검토. (색상:SILVER)\r\n-지상 1층 보조 주방 수평 검토.\r\n-지상 1층 보조 주방 가구 도어 검토.\r\n-지상 2층 가족실 금속 난간 철거.\r\n-지상 2층 화장실 슬림텍 타일 코킹.",
+        "keywords": [
+          "proj",
+          "성북동",
+          "이준혁",
+          "건축주",
+          "기호율",
+          "디자인",
+          "330",
+          "467",
+          "1114",
+          "2104"
+        ],
+        "documentType": "hwp",
+        "contentCategory": "general",
+        "language": "ko",
+        "sentiment": "neutral",
+        "readability": 67
+      },
+      "analyzedAt": 1753706180544,
+      "analysisDuration": 978
+    },
+    "file_cec843ed7fb3ee56ee964c7c13d63288_1753707881353": {
+      "filePath": "N:\\개인\\버텍스\\project\\1278.01-경기도 성남시 분당구 판교동 543-2 단독주택_홍종구 건축주\\09.프레젠테이션\\20140628 - 인테리어제안서\\archive\\0627-1판교543-2.pptx",
+      "fileExt": "pptx",
+      "fileSize": 22914636,
+      "analysisResult": {
+        "success": true,
+        "path": "N:\\개인\\버텍스\\project\\1278.01-경기도 성남시 분당구 판교동 543-2 단독주택_홍종구 건축주\\09.프레젠테이션\\20140628 - 인테리어제안서\\archive\\0627-1판교543-2.pptx",
+        "extension": ".pptx",
+        "size": 22914636,
+        "modified": "2014-06-27T08:40:08.000Z",
+        "analysis": {
+          "type": "powerpoint",
+          "content": "[슬라이드 3]\nC ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH C ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH\n\n[슬라이드 10]\nINTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR\n\n[슬라이드 11]\nINTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR\n\n[슬라이드 12]\nINTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR\n\n[슬라이드 13]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 9]\nINTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL\n\n[슬라이드 8]\nINTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL\n\n[슬라이드 7]\nINTERIOR DESIGN PROPOSAL 01 STOOL INTERIOR DESIGN PROPOSAL 01 STOOL\n\n[슬라이드 1]\nVer -TEX Design architecture / interior design architecture / interior design Ver -TEX Design architecture / interior design architecture / interior design style. visibility style. visibility\n\n[슬라이드 4]\nINTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA\n\n[슬라이드 5]\nINTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN\n\n[슬라이드 6]\nINTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA\n\n[슬라이드 14]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 15]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 16]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 25]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 24]\nINTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM\n\n[슬라이드 23]\nINTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM\n\n[슬라이드 2]\nINTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  06.  25 INTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  25\n\n[슬라이드 22]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 20]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 21]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 17]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 19]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 18]\nINTERIOR DESIGN PROPOSAL 01 FOYER INTERIOR DESIGN PROPOSAL 01 FOYER\n\n[노트]\n1 1",
+          "summary": {
+            "slides": 25,
+            "lines": 77,
+            "characters": 3259,
+            "words": 502,
+            "paragraphs": 27,
+            "encoding": "utf-8",
+            "fileSize": 22914636,
+            "fileSizeFormatted": "21.85 MB"
+          },
+          "analysis": {
+            "language": "en",
+            "keywords": [
+              "design",
+              "interior",
+              "proposal",
+              "study",
+              "슬라이드",
+              "room",
+              "bedroom",
+              "research",
+              "furniture",
+              "kitchen"
+            ],
+            "sentiment": "neutral",
+            "readability": 0,
+            "confidence": 0.9,
+            "extractionMethod": "advanced-zip-analysis"
+          },
+          "metadata": {
+            "documentProperties": {
+              "title": "0627-1판교543-2",
+              "author": "V training",
+              "subject": "",
+              "created": "2022-06-21T18:16:17.000Z",
+              "modified": "2014-06-27T08:40:08.000Z",
+              "size": 22914636
+            },
+            "hasImages": true,
+            "hasCharts": false,
+            "hasTables": false,
+            "hasAnimations": true,
+            "hasTransitions": false,
+            "textExtraction": "advanced-zip-analysis",
+            "structure": {
+              "slides": 25,
+              "sections": 0,
+              "paragraphs": 27,
+              "lines": 79,
+              "characters": 2960,
+              "words": 449,
+              "slideDetails": [
+                {
+                  "slideNumber": 3,
+                  "text": "C ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH C ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH",
+                  "fileName": "ppt/slides/slide3.xml",
+                  "wordCount": 72,
+                  "characterCount": 437,
+                  "hasImages": false,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 10,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR",
+                  "fileName": "ppt/slides/slide10.xml",
+                  "wordCount": 10,
+                  "characterCount": 69,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 11,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR",
+                  "fileName": "ppt/slides/slide11.xml",
+                  "wordCount": 10,
+                  "characterCount": 69,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 12,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR",
+                  "fileName": "ppt/slides/slide12.xml",
+                  "wordCount": 10,
+                  "characterCount": 69,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 13,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                  "fileName": "ppt/slides/slide13.xml",
+                  "wordCount": 12,
+                  "characterCount": 73,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 9,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL",
+                  "fileName": "ppt/slides/slide9.xml",
+                  "wordCount": 28,
+                  "characterCount": 197,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 8,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL",
+                  "fileName": "ppt/slides/slide8.xml",
+                  "wordCount": 28,
+                  "characterCount": 197,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 7,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 STOOL INTERIOR DESIGN PROPOSAL 01 STOOL",
+                  "fileName": "ppt/slides/slide7.xml",
+                  "wordCount": 10,
+                  "characterCount": 67,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 1,
+                  "text": "Ver -TEX Design architecture / interior design architecture / interior design Ver -TEX Design architecture / interior design architecture / interior design style. visibility style. visibility",
+                  "fileName": "ppt/slides/slide1.xml",
+                  "wordCount": 26,
+                  "characterCount": 191,
+                  "hasImages": false,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 4,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA",
+                  "fileName": "ppt/slides/slide4.xml",
+                  "wordCount": 12,
+                  "characterCount": 83,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 5,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN",
+                  "fileName": "ppt/slides/slide5.xml",
+                  "wordCount": 30,
+                  "characterCount": 213,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 6,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA",
+                  "fileName": "ppt/slides/slide6.xml",
+                  "wordCount": 30,
+                  "characterCount": 213,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 14,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                  "fileName": "ppt/slides/slide14.xml",
+                  "wordCount": 12,
+                  "characterCount": 73,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 15,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                  "fileName": "ppt/slides/slide15.xml",
+                  "wordCount": 12,
+                  "characterCount": 73,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 16,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                  "fileName": "ppt/slides/slide16.xml",
+                  "wordCount": 12,
+                  "characterCount": 73,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 25,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                  "fileName": "ppt/slides/slide25.xml",
+                  "wordCount": 12,
+                  "characterCount": 85,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 24,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM",
+                  "fileName": "ppt/slides/slide24.xml",
+                  "wordCount": 14,
+                  "characterCount": 85,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 23,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM",
+                  "fileName": "ppt/slides/slide23.xml",
+                  "wordCount": 14,
+                  "characterCount": 85,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 2,
+                  "text": "INTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  06.  25 INTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  25",
+                  "fileName": "ppt/slides/slide2.xml",
+                  "wordCount": 25,
+                  "characterCount": 128,
+                  "hasImages": false,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 22,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                  "fileName": "ppt/slides/slide22.xml",
+                  "wordCount": 12,
+                  "characterCount": 85,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 20,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                  "fileName": "ppt/slides/slide20.xml",
+                  "wordCount": 12,
+                  "characterCount": 85,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 21,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                  "fileName": "ppt/slides/slide21.xml",
+                  "wordCount": 12,
+                  "characterCount": 85,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 17,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                  "fileName": "ppt/slides/slide17.xml",
+                  "wordCount": 12,
+                  "characterCount": 73,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 19,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                  "fileName": "ppt/slides/slide19.xml",
+                  "wordCount": 12,
+                  "characterCount": 85,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                },
+                {
+                  "slideNumber": 18,
+                  "text": "INTERIOR DESIGN PROPOSAL 01 FOYER INTERIOR DESIGN PROPOSAL 01 FOYER",
+                  "fileName": "ppt/slides/slide18.xml",
+                  "wordCount": 10,
+                  "characterCount": 67,
+                  "hasImages": true,
+                  "hasCharts": false,
+                  "hasTables": false,
+                  "hasShapes": true,
+                  "hasAnimations": true
+                }
+              ],
+              "noteDetails": [
+                {
+                  "fileName": "ppt/notesSlides/notesSlide1.xml",
+                  "text": "1 1",
+                  "wordCount": 2,
+                  "characterCount": 3
+                }
+              ]
+            },
+            "slideDetails": [
+              {
+                "slideNumber": 3,
+                "text": "C ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH C ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH",
+                "fileName": "ppt/slides/slide3.xml",
+                "wordCount": 72,
+                "characterCount": 437,
+                "hasImages": false,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 10,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR",
+                "fileName": "ppt/slides/slide10.xml",
+                "wordCount": 10,
+                "characterCount": 69,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 11,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR",
+                "fileName": "ppt/slides/slide11.xml",
+                "wordCount": 10,
+                "characterCount": 69,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 12,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR",
+                "fileName": "ppt/slides/slide12.xml",
+                "wordCount": 10,
+                "characterCount": 69,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 13,
+                "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                "fileName": "ppt/slides/slide13.xml",
+                "wordCount": 12,
+                "characterCount": 73,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 9,
+                "text": "INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL",
+                "fileName": "ppt/slides/slide9.xml",
+                "wordCount": 28,
+                "characterCount": 197,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 8,
+                "text": "INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL",
+                "fileName": "ppt/slides/slide8.xml",
+                "wordCount": 28,
+                "characterCount": 197,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 7,
+                "text": "INTERIOR DESIGN PROPOSAL 01 STOOL INTERIOR DESIGN PROPOSAL 01 STOOL",
+                "fileName": "ppt/slides/slide7.xml",
+                "wordCount": 10,
+                "characterCount": 67,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 1,
+                "text": "Ver -TEX Design architecture / interior design architecture / interior design Ver -TEX Design architecture / interior design architecture / interior design style. visibility style. visibility",
+                "fileName": "ppt/slides/slide1.xml",
+                "wordCount": 26,
+                "characterCount": 191,
+                "hasImages": false,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 4,
+                "text": "INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA",
+                "fileName": "ppt/slides/slide4.xml",
+                "wordCount": 12,
+                "characterCount": 83,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 5,
+                "text": "INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN",
+                "fileName": "ppt/slides/slide5.xml",
+                "wordCount": 30,
+                "characterCount": 213,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 6,
+                "text": "INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA",
+                "fileName": "ppt/slides/slide6.xml",
+                "wordCount": 30,
+                "characterCount": 213,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 14,
+                "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                "fileName": "ppt/slides/slide14.xml",
+                "wordCount": 12,
+                "characterCount": 73,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 15,
+                "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                "fileName": "ppt/slides/slide15.xml",
+                "wordCount": 12,
+                "characterCount": 73,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 16,
+                "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                "fileName": "ppt/slides/slide16.xml",
+                "wordCount": 12,
+                "characterCount": 73,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 25,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                "fileName": "ppt/slides/slide25.xml",
+                "wordCount": 12,
+                "characterCount": 85,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 24,
+                "text": "INTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM",
+                "fileName": "ppt/slides/slide24.xml",
+                "wordCount": 14,
+                "characterCount": 85,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 23,
+                "text": "INTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM",
+                "fileName": "ppt/slides/slide23.xml",
+                "wordCount": 14,
+                "characterCount": 85,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 2,
+                "text": "INTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  06.  25 INTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  25",
+                "fileName": "ppt/slides/slide2.xml",
+                "wordCount": 25,
+                "characterCount": 128,
+                "hasImages": false,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 22,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                "fileName": "ppt/slides/slide22.xml",
+                "wordCount": 12,
+                "characterCount": 85,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 20,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                "fileName": "ppt/slides/slide20.xml",
+                "wordCount": 12,
+                "characterCount": 85,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 21,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                "fileName": "ppt/slides/slide21.xml",
+                "wordCount": 12,
+                "characterCount": 85,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 17,
+                "text": "INTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK",
+                "fileName": "ppt/slides/slide17.xml",
+                "wordCount": 12,
+                "characterCount": 73,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 19,
+                "text": "INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM",
+                "fileName": "ppt/slides/slide19.xml",
+                "wordCount": 12,
+                "characterCount": 85,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              },
+              {
+                "slideNumber": 18,
+                "text": "INTERIOR DESIGN PROPOSAL 01 FOYER INTERIOR DESIGN PROPOSAL 01 FOYER",
+                "fileName": "ppt/slides/slide18.xml",
+                "wordCount": 10,
+                "characterCount": 67,
+                "hasImages": true,
+                "hasCharts": false,
+                "hasTables": false,
+                "hasShapes": true,
+                "hasAnimations": true
+              }
+            ],
+            "warnings": []
+          }
+        },
+        "fileInfo": {
+          "size": 22914636,
+          "modified": "2014-06-27T08:40:08.000Z",
+          "created": "2022-06-21T18:16:17.000Z"
+        },
+        "analysisDuration": 12760,
+        "content": "[슬라이드 3]\nC ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH C ONTENTS ONTENTS 03 BED ROOM RESEARCH FURNITURE 04 BATH ROOM RESEARCH FURNITURE 05 STUDY ROOM RESEARCH FURNITURE 06 KITCHEN RESEARCH FURNITURE 3 D STUDY 01 FOYER MATERIAL RESEARCH FURNITURE 02 STAIR 3 D STUDY RESEARCH\n\n[슬라이드 10]\nINTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR\n\n[슬라이드 11]\nINTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR\n\n[슬라이드 12]\nINTERIOR DESIGN PROPOSAL 01 MIRROR INTERIOR DESIGN PROPOSAL 01 MIRROR\n\n[슬라이드 13]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 9]\nINTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL\n\n[슬라이드 8]\nINTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN STOOL\n\n[슬라이드 7]\nINTERIOR DESIGN PROPOSAL 01 STOOL INTERIOR DESIGN PROPOSAL 01 STOOL\n\n[슬라이드 1]\nVer -TEX Design architecture / interior design architecture / interior design Ver -TEX Design architecture / interior design architecture / interior design style. visibility style. visibility\n\n[슬라이드 4]\nINTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA\n\n[슬라이드 5]\nINTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN INTERIOR DESIGN PROPOSAL 01 BUILT-IN SOFA STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN\n\n[슬라이드 6]\nINTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA INTERIOR DESIGN PROPOSAL 01 STAIR STUDY BEDROOM LIVINGROOM STUDY BATHROOM STUDY ROOM KITCHEN BUILT-IN SOFA\n\n[슬라이드 14]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 15]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 16]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 25]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 24]\nINTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 2F LIVING ROOM\n\n[슬라이드 23]\nINTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM INTERIOR DESIGN PROPOSAL 01 1F LIVING ROOM\n\n[슬라이드 2]\nINTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  06.  25 INTERIOR DESIGN PROPOSAL 경기도 성남시 판교동 543-2 단독주택 [ ] 2014.  25\n\n[슬라이드 22]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 20]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 21]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 17]\nINTERIOR DESIGN PROPOSAL 01 KEY RACK INTERIOR DESIGN PROPOSAL 01 KEY RACK\n\n[슬라이드 19]\nINTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM INTERIOR DESIGN PROPOSAL 01 MASTER BEDROOM\n\n[슬라이드 18]\nINTERIOR DESIGN PROPOSAL 01 FOYER INTERIOR DESIGN PROPOSAL 01 FOYER\n\n[노트]\n1 1",
+        "keywords": [
+          "design",
+          "interior",
+          "proposal",
+          "study",
+          "슬라이드",
+          "room",
+          "bedroom",
+          "research",
+          "furniture",
+          "kitchen"
+        ],
+        "documentType": "powerpoint",
+        "contentCategory": "academic",
+        "language": "en",
+        "sentiment": "neutral",
+        "readability": 0
+      },
+      "analyzedAt": 1753707881353,
+      "analysisDuration": 12760
+    },
+    "file_b4bb1495ddf9b280c9a981569908a016_1753871007714": {
+      "filePath": "C:\\Users\\Nova\\Desktop\\00. 표지-Model.pdf",
+      "fileExt": "pdf",
+      "fileSize": 128442,
+      "analysisResult": {
+        "success": true,
+        "path": "C:\\Users\\Nova\\Desktop\\00. 표지-Model.pdf",
+        "extension": ".pdf",
+        "size": 128442,
+        "modified": "2025-07-24T05:14:06.981Z",
+        "analysis": {
+          "type": "pdf",
+          "content": "국립연천현충원 조성사업 설계용역 2025. 07. 국립연천현충원 YEONCHEON NATIONAL CEMETERY [  인 테 리 어  ]",
+          "summary": {
+            "pages": 1,
+            "lines": 1,
+            "characters": 77,
+            "words": 15,
+            "paragraphs": 1,
+            "encoding": "utf-8",
+            "imageCount": 0,
+            "ocrCount": 0,
+            "analysisDuration": 33521
+          },
+          "analysis": {
+            "language": "ko",
+            "keywords": [
+              "국립연천현충원",
+              "2025",
+              "조성사업",
+              "설계용역",
+              "yeoncheon",
+              "national",
+              "cemetery"
+            ],
+            "sentiment": "neutral",
+            "readability": 65,
+            "textQuality": "poor",
+            "imageQuality": "unknown",
+            "ocrQuality": "unknown"
+          },
+          "metadata": {
+            "title": null,
+            "author": null,
+            "subject": null,
+            "creator": null,
+            "producer": null,
+            "creationDate": null,
+            "modDate": null,
+            "keywords": null,
+            "hasImages": false,
+            "hasTables": false,
+            "textExtraction": "success",
+            "version": "1.4",
+            "pageCount": 1,
+            "imageCount": 0,
+            "ocrCount": 0,
+            "analysisQuality": {
+              "hasText": true,
+              "hasImages": false,
+              "hasPageImages": true,
+              "hasOCR": false,
+              "textQuality": "poor",
+              "imageQuality": "unknown",
+              "ocrQuality": "unknown"
+            }
+          },
+          "completeAnalysis": {
+            "success": true,
+            "path": "C:\\Users\\Nova\\Desktop\\00. 표지-Model.pdf",
+            "results": {
+              "text": {
+                "text": "국립연천현충원 조성사업 설계용역 2025. 07. 국립연천현충원 YEONCHEON NATIONAL CEMETERY [  인 테 리 어  ]",
+                "pages": 1,
+                "info": {},
+                "version": "1.4",
+                "method": "pdf2json"
+              },
+              "images": [],
+              "pageImages": [
+                {
+                  "page": 1,
+                  "path": "temp_images\\page_1_canvas.png",
+                  "size": 31324,
+                  "method": "canvas",
+                  "dataUrl": "data:image/png;base64,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gJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQAAABiJEAYAAICRCGEAAAAYiRAGAACAkQhhAAAAGIkQBgAAgJEIYQC4Sc6cDVenzq/o2c4vKzkp+WZPBwCM43KzJwAAJkpNTdXocV8rOSVFkpQt+02eEQCYhxAGgH9Z2MlT+nLc1zobfu5mTwUAjEYIA8C/aMHiHzRt5hzZ7XYVKlRIqampN3tKAGAs1ggDwL/owoU4WSwWPfZIe3V66n83ezoAYDTuCAPAv6hhYD09+kg7+foU0Zp1G2/2dADAaIQwAPyLqlWpfLOnAAC4hKURAAAAMBIhDAAAACMRwgAAADASIQwAAAAjEcIAAAAwEiEMAAAAIznZ7fZ8+wX38YnJstmy5VnYI7+GBAAAAJSckiaLxVk+3p75NiZ3hAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRCGAAAAEYihAEAAGAkQhgAAABGIoQBAABgJEIYAAAARiKEAQAAYCRC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",
+                  "isDummy": false,
+                  "dimensions": {
+                    "width": 706,
+                    "height": 1000
+                  }
+                }
+              ],
+              "ocrResults": [],
+              "metadata": {
+                "basic": {
+                  "version": "1.7",
+                  "pages": 0,
+                  "title": "",
+                  "author": "",
+                  "subject": "",
+                  "creator": "",
+                  "producer": "",
+                  "created": "",
+                  "modified": "",
+                  "keywords": "",
+                  "trapped": "",
+                  "fileSize": 128442
+                },
+                "advanced": {
+                  "pageCount": 1,
+                  "form": {
+                    "hasForm": true,
+                    "fieldCount": 0,
+                    "fields": []
+                  },
+                  "security": {
+                    "isEncrypted": false,
+                    "permissions": {},
+                    "passwordRequired": false
+                  },
+                  "technical": {
+                    "pdfVersion": "",
+                    "linearized": false,
+                    "crossRefType": "standard",
+                    "compressionUsed": false
+                  },
+                  "language": "",
+                  "pageLayout": "",
+                  "pageMode": "",
+                  "viewerPreferences": {}
+                },
+                "filesystem": {
+                  "file": {
+                    "name": "00. 표지-Model",
+                    "extension": ".pdf",
+                    "fullPath": "C:\\Users\\Nova\\Desktop\\00. 표지-Model.pdf",
+                    "directory": "C:\\Users\\Nova\\Desktop",
+                    "size": 128442,
+                    "sizeFormatted": "125.43 KB"
+                  },
+                  "timestamps": {
+                    "created": "2025-07-24T05:14:06.498Z",
+                    "modified": "2025-07-24T05:14:06.981Z",
+                    "accessed": "2025-07-30T10:22:42.659Z",
+                    "changed": "2025-07-24T05:14:06.994Z"
+                  },
+                  "permissions": {
+                    "readable": true,
+                    "writable": true,
+                    "executable": false
+                  },
+                  "system": {
+                    "platform": "win32",
+                    "nodeVersion": "v22.17.1",
+                    "extractedAt": "2025-07-30T10:22:42.935Z"
+                  }
+                },
+                "extraction": {
+                  "methods": [
+                    "basic",
+                    "advanced",
+                    "filesystem"
+                  ],
+                  "timestamp": 1753870991829,
+                  "success": 3,
+                  "total": 3
+                },
+                "unified": {
+                  "title": "Untitled",
+                  "author": "Unknown",
+                  "subject": "",
+                  "creator": "",
+                  "producer": "",
+                  "keywords": "",
+                  "version": "1.7",
+                  "pages": 1,
+                  "fileSize": 128442,
+                  "fileSizeFormatted": "125.43 KB",
+                  "created": "2025-07-24T05:14:06.498Z",
+                  "modified": "2025-07-24T05:14:06.981Z",
+                  "hasForm": true,
+                  "formFieldCount": 0,
+                  "isEncrypted": false,
+                  "language": "",
+                  "quality": {
+                    "score": 4.5,
+                    "maxScore": 10,
+                    "percentage": 45,
+                    "grade": "F",
+                    "description": "매우 부족한 메타데이터 품질"
+                  },
+                  "statistics": {
+                    "basicFields": 2,
+                    "advancedFields": 5,
+                    "filesystemFields": 4,
+                    "totalFields": 11
+                  }
+                }
+              },
+              "analysis": {
+                "hasText": true,
+                "hasImages": false,
+                "hasPageImages": true,
+                "hasOCR": false,
+                "textQuality": "poor",
+                "imageQuality": "unknown",
+                "ocrQuality": "unknown"
+              },
+              "methods": [
+                "text-extraction",
+                "image-extraction",
+                "page-conversion",
+                "metadata-extraction",
+                "ocr-processing"
+              ]
+            },
+            "duration": 33521,
+            "methods": [
+              "text-extraction",
+              "image-extraction",
+              "page-conversion",
+              "metadata-extraction",
+              "ocr-processing"
+            ],
+            "summary": {
+              "textLength": 0,
+              "imageCount": 0,
+              "pageCount": 1,
+              "ocrCount": 0,
+              "methodsUsed": [
+                "text-extraction",
+                "image-extraction",
+                "page-conversion",
+                "metadata-extraction",
+                "ocr-processing"
+              ]
+            }
+          }
+        },
+        "fileInfo": {
+          "size": 128442,
+          "modified": "2025-07-24T05:14:06.981Z",
+          "created": "2025-07-24T05:14:06.498Z"
+        },
+        "analysisDuration": 33674,
+        "content": "국립연천현충원 조성사업 설계용역 2025. 07. 국립연천현충원 YEONCHEON NATIONAL CEMETERY [  인 테 리 어  ]",
+        "keywords": [
+          "국립연천현충원",
+          "2025",
+          "조성사업",
+          "설계용역",
+          "yeoncheon",
+          "national",
+          "cemetery"
+        ],
+        "documentType": "pdf",
+        "contentCategory": "general",
+        "language": "ko",
+        "sentiment": "neutral",
+        "readability": 65
+      },
+      "analyzedAt": 1753871007714,
+      "analysisDuration": 33674
+    }
+  },
+  "filePatterns": {
+    "N:\\개인\\버텍스\\project\\1279.01-Orix-압구정점 인테리어공사\\문서\\회의록_의제": {
+      "hwp": 1
+    },
+    "N:\\개인\\버텍스\\project\\1114.02_성북동 A동 인테리어공사\\문서\\회의록_의제": {
+      "hwp": 1
+    },
+    "N:\\개인\\버텍스\\project\\1278.01-경기도 성남시 분당구 판교동 543-2 단독주택_홍종구 건축주\\09.프레젠테이션\\20140628 - 인테리어제안서\\archive": {
+      "pptx": 1
+    },
+    "C:\\Users\\Nova\\Desktop": {
+      "pdf": 1
+    }
+  },
+  "contentPatterns": {},
+  "formatStats": {
+    "txt": {
+      "count": 0,
+      "totalSize": 0,
+      "avgSize": 0
+    },
+    "docx": {
+      "count": 0,
+      "totalSize": 0,
+      "avgSize": 0
+    },
+    "xlsx": {
+      "count": 0,
+      "totalSize": 0,
+      "avgSize": 0
+    },
+    "pptx": {
+      "count": 1,
+      "totalSize": 22914636,
+      "avgSize": 22914636
+    },
+    "pdf": {
+      "count": 1,
+      "totalSize": 128442,
+      "avgSize": 128442
+    },
+    "hwp": {
+      "count": 2,
+      "totalSize": 49152,
+      "avgSize": 24576
+    },
+    "csv": {
+      "count": 0,
+      "totalSize": 0,
+      "avgSize": 0
+    },
+    "json": {
+      "count": 0,
+      "totalSize": 0,
+      "avgSize": 0
+    },
+    "xml": {
+      "count": 0,
+      "totalSize": 0,
+      "avgSize": 0
+    },
+    "yaml": {
+      "count": 0,
+      "totalSize": 0,
+      "avgSize": 0
+    }
+  },
+  "learningInsights": {
+    "commonKeywords": {
+      "330": 1,
+      "467": 1,
+      "1114": 1,
+      "2025": 1,
+      "2104": 1,
+      "신성금고": 1,
+      "버텍스": 1,
+      "size": 1,
+      "2000mm": 1,
+      "부가세": 1,
+      "금고실": 1,
+      "가설계": 1,
+      "proj": 2,
+      "김종기": 1,
+      "김선화": 1,
+      "성북동": 1,
+      "이준혁": 1,
+      "건축주": 1,
+      "기호율": 1,
+      "디자인": 1,
+      "design": 1,
+      "interior": 1,
+      "proposal": 1,
+      "study": 1,
+      "슬라이드": 1,
+      "room": 1,
+      "bedroom": 1,
+      "research": 1,
+      "furniture": 1,
+      "kitchen": 1,
+      "국립연천현충원": 1,
+      "조성사업": 1,
+      "설계용역": 1,
+      "yeoncheon": 1,
+      "national": 1,
+      "cemetery": 1
+    },
+    "documentTypes": {
+      "hwp": 2,
+      "powerpoint": 1,
+      "pdf": 1
+    },
+    "sizePatterns": {
+      "medium": 2,
+      "large": 2
+    },
+    "contentCategories": {
+      "general": 3,
+      "academic": 1
+    }
+  }
+}

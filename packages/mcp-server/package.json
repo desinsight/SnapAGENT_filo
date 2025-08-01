@@ -1,0 +1,32 @@
+{
+  "name": "mcp-server",
+  "version": "1.0.0",
+  "description": "MCP 서버 (HTTP 통신)",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "start:web": "node src/index.js web",
+    "start:cli": "node src/index.js cli",
+    "start:ai": "node src/ai/ai-cli.js",
+    "dev": "nodemon src/index.js web",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.842.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "body-parser": "^1.20.2",
+    "commander": "^11.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "inquirer": "^9.2.0",
+    "openai": "^4.0.0",
+    "winston": "^3.11.0",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2"
+  }
+}

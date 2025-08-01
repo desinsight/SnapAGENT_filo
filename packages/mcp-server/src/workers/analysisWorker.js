@@ -1,0 +1,481 @@
+import { parentPort, workerData } from 'worker_threads';
+import fs from 'fs/promises';
+import path from 'path';
+import { createHash } from 'crypto';
+import { logger } from '../utils/logger.js';
+
+// 메시지 핸들러 설정
+parentPort.on('message', async (message) => {
+  try {
+    let result;
+    
+    switch (message.type) {
+      case 'analyze_disk_usage':
+        result = await analyzeDiskUsage(message.data);
+        break;
+      case 'analyze_folder_sizes':
+        result = await analyzeFolderSizes(message.data);
+        break;
+      case 'analyze_file_types':
+        result = await analyzeFileTypes(message.data);
+        break;
+      case 'analyze_access_patterns':
+        result = await analyzeAccessPatterns(message.data);
+        break;
+      case 'predict_growth':
+        result = await predictGrowth(message.data);
+        break;
+      case 'find_large_files':
+        result = await findLargeFiles(message.data);
+        break;
+      case 'track_file_lifecycle':
+        result = await trackFileLifecycle(message.data);
+        break;
+      default:
+        throw new Error(`알 수 없는 작업 유형: ${message.type}`);
+    }
+
+    parentPort.postMessage({ success: true, result });
+  } catch (error) {
+    logger.error('작업 처리 실패:', error);
+    parentPort.postMessage({ success: false, error: error.message });
+  }
+});
+
+async function analyzeDiskUsage({ path, options = {} }) {
+  const {
+    recursive = true,
+    includeHidden = false,
+    minSize = 0
+  } = options;
+
+  const stats = {
+    totalSize: 0,
+    fileCount: 0,
+    dirCount: 0,
+    errors: 0
+  };
+
+  const processFile = async (filePath) => {
+    try {
+      const fileStats = await fs.stat(filePath);
+      if (fileStats.size >= minSize) {
+        stats.totalSize += fileStats.size;
+        stats.fileCount++;
+      }
+    } catch (e) {
+      logger.warn(`파일 분석 실패: ${filePath}`, e);
+      stats.errors++;
+    }
+  };
+
+  const processDirectory = async (dirPath) => {
+    try {
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        
+        if (entry.isDirectory()) {
+          if (recursive) {
+            await processDirectory(fullPath);
+          }
+          stats.dirCount++;
+        } else {
+          if (!includeHidden && entry.name.startsWith('.')) continue;
+          await processFile(fullPath);
+        }
+      }
+    } catch (e) {
+      logger.warn(`디렉토리 분석 실패: ${dirPath}`, e);
+      stats.errors++;
+    }
+  };
+
+  await processDirectory(path);
+  return stats;
+}
+
+async function analyzeFolderSizes({ path, options = {} }) {
+  const {
+    recursive = true,
+    includeHidden = false,
+    minSize = 0,
+    maxDepth = Infinity
+  } = options;
+
+  const folderSizes = new Map();
+
+  const processDirectory = async (dirPath, depth = 0) => {
+    if (depth > maxDepth) return;
+
+    try {
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
+      let totalSize = 0;
+      
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        
+        if (entry.isDirectory()) {
+          if (recursive) {
+            const subDirSize = await processDirectory(fullPath, depth + 1);
+            totalSize += subDirSize;
+          }
+        } else {
+          if (!includeHidden && entry.name.startsWith('.')) continue;
+          try {
+            const fileStats = await fs.stat(fullPath);
+            totalSize += fileStats.size;
+          } catch (e) {
+            logger.warn(`파일 분석 실패: ${fullPath}`, e);
+          }
+        }
+      }
+
+      if (totalSize >= minSize) {
+        folderSizes.set(dirPath, totalSize);
+      }
+
+      return totalSize;
+    } catch (e) {
+      logger.warn(`디렉토리 분석 실패: ${dirPath}`, e);
+      return 0;
+    }
+  };
+
+  await processDirectory(path);
+
+  // 크기별로 정렬
+  const sortedFolders = Array.from(folderSizes.entries())
+    .sort((a, b) => b[1] - a[1]);
+
+  return {
+    folders: sortedFolders,
+    totalFolders: folderSizes.size
+  };
+}
+
+async function analyzeFileTypes({ path, options = {} }) {
+  const {
+    recursive = true,
+    includeHidden = false,
+    minCount = 0
+  } = options;
+
+  const typeStats = new Map();
+
+  const processFile = async (filePath) => {
+    try {
+      const ext = path.extname(filePath).toLowerCase().slice(1) || 'no_extension';
+      const stats = await fs.stat(filePath);
+      
+      if (!typeStats.has(ext)) {
+        typeStats.set(ext, {
+          count: 0,
+          totalSize: 0,
+          avgSize: 0,
+          largestFile: { path: filePath, size: stats.size }
+        });
+      }
+
+      const typeStat = typeStats.get(ext);
+      typeStat.count++;
+      typeStat.totalSize += stats.size;
+      typeStat.avgSize = typeStat.totalSize / typeStat.count;
+
+      if (stats.size > typeStat.largestFile.size) {
+        typeStat.largestFile = { path: filePath, size: stats.size };
+      }
+    } catch (e) {
+      logger.warn(`파일 분석 실패: ${filePath}`, e);
+    }
+  };
+
+  const processDirectory = async (dirPath) => {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      
+      if (entry.isDirectory()) {
+        if (recursive) {
+          await processDirectory(fullPath);
+        }
+      } else {
+        if (!includeHidden && entry.name.startsWith('.')) continue;
+        await processFile(fullPath);
+      }
+    }
+  };
+
+  await processDirectory(path);
+
+  // 최소 개수 필터링 및 정렬
+  const filteredStats = Array.from(typeStats.entries())
+    .filter(([_, stats]) => stats.count >= minCount)
+    .sort((a, b) => b[1].totalSize - a[1].totalSize);
+
+  return {
+    types: filteredStats,
+    totalTypes: filteredStats.length
+  };
+}
+
+async function analyzeAccessPatterns({ path, options = {} }) {
+  const {
+    recursive = true,
+    includeHidden = false,
+    timeWindow = 30 * 24 * 60 * 60 * 1000 // 30일
+  } = options;
+
+  const accessPatterns = {
+    recent: new Map(), // 최근 접근
+    frequent: new Map(), // 자주 접근
+    inactive: new Map() // 비활성
+  };
+
+  const now = Date.now();
+
+  const processFile = async (filePath) => {
+    try {
+      const stats = await fs.stat(filePath);
+      const lastAccess = stats.atime.getTime();
+      const lastModify = stats.mtime.getTime();
+      const age = now - lastAccess;
+
+      if (age <= timeWindow) {
+        // 최근 접근 파일
+        accessPatterns.recent.set(filePath, {
+          lastAccess,
+          lastModify,
+          size: stats.size
+        });
+      } else if (age <= timeWindow * 3) {
+        // 자주 접근 파일
+        accessPatterns.frequent.set(filePath, {
+          lastAccess,
+          lastModify,
+          size: stats.size
+        });
+      } else {
+        // 비활성 파일
+        accessPatterns.inactive.set(filePath, {
+          lastAccess,
+          lastModify,
+          size: stats.size
+        });
+      }
+    } catch (e) {
+      logger.warn(`파일 분석 실패: ${filePath}`, e);
+    }
+  };
+
+  const processDirectory = async (dirPath) => {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      
+      if (entry.isDirectory()) {
+        if (recursive) {
+          await processDirectory(fullPath);
+        }
+      } else {
+        if (!includeHidden && entry.name.startsWith('.')) continue;
+        await processFile(fullPath);
+      }
+    }
+  };
+
+  await processDirectory(path);
+
+  return {
+    recent: {
+      count: accessPatterns.recent.size,
+      files: Array.from(accessPatterns.recent.entries())
+    },
+    frequent: {
+      count: accessPatterns.frequent.size,
+      files: Array.from(accessPatterns.frequent.entries())
+    },
+    inactive: {
+      count: accessPatterns.inactive.size,
+      files: Array.from(accessPatterns.inactive.entries())
+    }
+  };
+}
+
+async function predictGrowth({ path, options = {} }) {
+  const {
+    timeWindow = 30 * 24 * 60 * 60 * 1000, // 30일
+    predictionPeriod = 90 * 24 * 60 * 60 * 1000 // 90일
+  } = options;
+
+  // 과거 데이터 수집
+  const historicalData = await collectHistoricalData(path, timeWindow);
+  
+  // 성장률 계산
+  const growthRate = calculateGrowthRate(historicalData);
+  
+  // 미래 예측
+  const prediction = predictFutureGrowth(historicalData, growthRate, predictionPeriod);
+
+  return {
+    currentSize: historicalData[historicalData.length - 1].size,
+    growthRate,
+    prediction,
+    historicalData
+  };
+}
+
+async function findLargeFiles({ path, options = {} }) {
+  const {
+    recursive = true,
+    includeHidden = false,
+    minSize = 100 * 1024 * 1024, // 100MB
+    maxCount = 100
+  } = options;
+
+  const largeFiles = [];
+
+  const processFile = async (filePath) => {
+    try {
+      const stats = await fs.stat(filePath);
+      if (stats.size >= minSize) {
+        largeFiles.push({
+          path: filePath,
+          size: stats.size,
+          lastModified: stats.mtime
+        });
+      }
+    } catch (e) {
+      logger.warn(`파일 분석 실패: ${filePath}`, e);
+    }
+  };
+
+  const processDirectory = async (dirPath) => {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      
+      if (entry.isDirectory()) {
+        if (recursive) {
+          await processDirectory(fullPath);
+        }
+      } else {
+        if (!includeHidden && entry.name.startsWith('.')) continue;
+        await processFile(fullPath);
+      }
+    }
+  };
+
+  await processDirectory(path);
+
+  // 크기별로 정렬하고 최대 개수 제한
+  return largeFiles
+    .sort((a, b) => b.size - a.size)
+    .slice(0, maxCount);
+}
+
+async function trackFileLifecycle({ path, options = {} }) {
+  const {
+    recursive = true,
+    includeHidden = false,
+    timeWindow = 30 * 24 * 60 * 60 * 1000 // 30일
+  } = options;
+
+  const lifecycleData = {
+    created: new Map(),
+    modified: new Map(),
+    accessed: new Map()
+  };
+
+  const processFile = async (filePath) => {
+    try {
+      const stats = await fs.stat(filePath);
+      const now = Date.now();
+
+      // 생성 시간
+      const created = stats.birthtime.getTime();
+      if (now - created <= timeWindow) {
+        lifecycleData.created.set(filePath, {
+          time: created,
+          size: stats.size
+        });
+      }
+
+      // 수정 시간
+      const modified = stats.mtime.getTime();
+      if (now - modified <= timeWindow) {
+        lifecycleData.modified.set(filePath, {
+          time: modified,
+          size: stats.size
+        });
+      }
+
+      // 접근 시간
+      const accessed = stats.atime.getTime();
+      if (now - accessed <= timeWindow) {
+        lifecycleData.accessed.set(filePath, {
+          time: accessed,
+          size: stats.size
+        });
+      }
+    } catch (e) {
+      logger.warn(`파일 분석 실패: ${filePath}`, e);
+    }
+  };
+
+  const processDirectory = async (dirPath) => {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      
+      if (entry.isDirectory()) {
+        if (recursive) {
+          await processDirectory(fullPath);
+        }
+      } else {
+        if (!includeHidden && entry.name.startsWith('.')) continue;
+        await processFile(fullPath);
+      }
+    }
+  };
+
+  await processDirectory(path);
+
+  return {
+    created: {
+      count: lifecycleData.created.size,
+      files: Array.from(lifecycleData.created.entries())
+    },
+    modified: {
+      count: lifecycleData.modified.size,
+      files: Array.from(lifecycleData.modified.entries())
+    },
+    accessed: {
+      count: lifecycleData.accessed.size,
+      files: Array.from(lifecycleData.accessed.entries())
+    }
+  };
+}
+
+async function collectHistoricalData(path, timeWindow) {
+  // TODO: 실제 구현
+  return [];
+}
+
+function calculateGrowthRate(historicalData) {
+  // TODO: 실제 구현
+  return 0;
+}
+
+function predictFutureGrowth(historicalData, growthRate, predictionPeriod) {
+  // TODO: 실제 구현
+  return {
+    predictedSize: 0,
+    confidence: 0
+  };
+} 

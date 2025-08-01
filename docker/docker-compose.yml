@@ -1,0 +1,50 @@
+services:
+  mcp-server:
+    build:
+      context: ../packages/mcp-server
+      dockerfile: ../../docker/mcp-server.Dockerfile
+    volumes:
+      # - ../packages/mcp-server:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+      - C:/:/host-c
+      - D:/:/host-d
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  web-api:
+    build:
+      context: ../packages/web-api
+      dockerfile: ../../docker/web-api.Dockerfile
+    volumes:
+      # 소스 코드는 실시간 반영하되, node_modules는 컨테이너 것 보호
+      - ../packages/web-api:/app
+      - /app/node_modules  # 이 라인이 핵심! node_modules는 컨테이너 내부 것 사용
+      - /var/run/docker.sock:/var/run/docker.sock
+      - C:/:/host-c
+      - D:/:/host-d
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mcp-server
+    restart: unless-stopped
+
+  web-ui:
+    build:
+      context: ../packages/web-ui
+      dockerfile: ../../docker/web-ui.Dockerfile
+    volumes:
+      # 개발 환경에서는 UI도 실시간 반영
+      - ../packages/web-ui:/app
+      - /app/node_modules  # node_modules 보호
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:5000
+    ports:
+      - "4173:4173"
+    depends_on:
+      - web-api
+    restart: unless-stopped

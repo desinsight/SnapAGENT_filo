@@ -1,0 +1,14 @@
+{
+  "users": {
+    "test-user-subscription": {
+      "calendar": {
+        "tier": "premium",
+        "status": "active",
+        "startedAt": "2025-07-03T14:10:49.332Z",
+        "expiresAt": "2025-08-02T14:10:49.332Z",
+        "trialUsed": false
+      }
+    }
+  },
+  "lastUpdated": "2025-07-03T14:10:49.332Z"
+}

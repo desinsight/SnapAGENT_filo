@@ -1,0 +1,30 @@
+{
+  "memoryLimit": 500,
+  "timeout": 600,
+  "drives": ["C:", "D:", "N:"],
+  "scanChunkSize": 2000,
+  "includeHidden": false,
+  "logLevel": "info",
+  "enableProgress": true,
+  "restrictedPaths": [
+    "C:\\Windows",
+    "C:\\Program Files",
+    "C:\\Program Files (x86)",
+    "C:\\System32"
+  ],
+  "permissions": {
+    "read": true,
+    "write": true,
+    "delete": true,
+    "create": true
+  },
+  "ai": {
+    "openai": {
+      "apiKey": "",
+      "model": "gpt-4o-mini"
+    },
+    "anthropic": {
+      "apiKey": ""
+    }
+  }
+} 

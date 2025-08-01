@@ -1,0 +1,75 @@
+{
+  "name": "web-mcp-server",
+  "version": "1.0.0",
+  "description": "Web MCP Server - 통합 개발 환경",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev:electron",
+    "dev:electron": "cd apps/electron && npm run dev",
+    "dev:web": "cd apps/web && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:electron\"",
+    "build": "npm run build:electron && npm run build:web && npm run build:backend",
+    "build:electron": "cd apps/electron && npm run build",
+    "build:web": "cd apps/web && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "install:all": "npm install && npm run install:workspaces",
+    "install:workspaces": "npm install --workspaces",
+    "clean": "npm run clean:all",
+    "clean:all": "rm -rf node_modules && npm run clean:workspaces",
+    "clean:workspaces": "npm run clean:electron && npm run clean:web && npm run clean:backend",
+    "clean:electron": "cd apps/electron && rm -rf node_modules dist",
+    "clean:web": "cd apps/web && rm -rf node_modules dist",
+    "clean:backend": "cd backend && rm -rf node_modules dist",
+    "test": "npm run test:all",
+    "test:all": "npm run test:electron && npm run test:web && npm run test:backend",
+    "test:electron": "cd apps/electron && npm test",
+    "test:web": "cd apps/web && npm test",
+    "test:backend": "cd backend && npm test",
+    "lint": "npm run lint:all",
+    "lint:all": "npm run lint:electron && npm run lint:web && npm run lint:backend",
+    "lint:electron": "cd apps/electron && npm run lint",
+    "lint:web": "cd apps/web && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/web-mcp-server.git"
+  },
+  "keywords": [
+    "electron",
+    "react",
+    "nodejs",
+    "file-manager",
+    "ai",
+    "desktop-app"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

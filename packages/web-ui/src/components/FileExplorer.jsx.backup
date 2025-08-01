@@ -1,0 +1,3866 @@
+import React, { useState, useEffect, useRef } from 'react';
+import electronAPI from '../utils/electronAPI';
+import { apiFetch, getAISummary, getAIPlan, analyzeFilesAI, analyzeSearchResultsAI, recommendOrganizationAI, chatWithAI } from '../utils/api';
+import { 
+  FolderIcon, 
+  DocumentIcon, 
+  PhotoIcon, 
+  VideoCameraIcon, 
+  MusicalNoteIcon, 
+  ArchiveBoxIcon,
+  MagnifyingGlassIcon,
+  PlusIcon,
+  TrashIcon,
+  ArrowUpIcon,
+  Cog6ToothIcon,
+  SparklesIcon,
+  ChartBarIcon,
+  CloudIcon,
+  ShieldCheckIcon,
+  ClockIcon,
+  StarIcon,
+  EyeIcon,
+  PencilIcon,
+  DocumentDuplicateIcon,
+  ArrowPathIcon,
+  FunnelIcon,
+  ViewColumnsIcon,
+  Squares2X2Icon,
+  ListBulletIcon,
+  MoonIcon,
+  SunIcon,
+  HomeIcon,
+  ComputerDesktopIcon,
+  FolderOpenIcon,
+  BoltIcon,
+  CpuChipIcon,
+  CommandLineIcon,
+  BeakerIcon,
+  RocketLaunchIcon,
+  FireIcon,
+  LightBulbIcon,
+  GlobeAltIcon,
+  ChatBubbleLeftRightIcon,
+  UserGroupIcon,
+  PaperAirplaneIcon,
+  ArrowDownTrayIcon,
+  CalendarIcon,
+  CodeBracketIcon,
+  FilmIcon,
+  PresentationChartLineIcon,
+  DocumentTextIcon,
+  CubeIcon,
+  LanguageIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  Bars3BottomLeftIcon // 햄버거 5줄 아이콘 추가
+} from '@heroicons/react/24/outline';
+
+import {
+  FolderIcon as FolderSolidIcon,
+  DocumentIcon as DocumentSolidIcon,
+  PhotoIcon as PhotoSolidIcon,
+  SparklesIcon as SparklesSolidIcon,
+  HeartIcon as HeartSolidIcon,
+  ChatBubbleLeftRightIcon as ChatSolidIcon,
+  UserIcon as UserSolidIcon
+} from '@heroicons/react/24/solid';
+
+// 스크롤바 숨김을 위한 CSS 스타일 추가
+const hideScrollbarStyle = `
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+`;
+
+export default function FileExplorer() {
+  const [currentPath, setCurrentPath] = useState('');
+  const [files, setFiles] = useState([]);
+  const [preview, setPreview] = useState(null);
+  const [aiResult, setAiResult] = useState(null);
+  const [fileIcons, setFileIcons] = useState({}); // 파일 아이콘 캐시
+  const [loading, setLoading] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [chatHistory, setChatHistory] = useState([]);
+  const [aiThinking, setAiThinking] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState([]);
+  const [contextAwareness, setContextAwareness] = useState({
+    currentFolder: '',
+    fileCount: 0,
+    fileTypes: [],
+    recentActivity: []
+  });
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [viewMode, setViewMode] = useState('grid');
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [breadcrumbs, setBreadcrumbs] = useState([]);
+  const [drives, setDrives] = useState([]);
+  const [dragOver, setDragOver] = useState(false);
+  const [contextMenu, setContextMenu] = useState({ show: false, x: 0, y: 0, target: null });
+  const [darkMode, setDarkMode] = useState(false);
+  const [aiChatExpanded, setAiChatExpanded] = useState(false);
+  const [activeFilters, setActiveFilters] = useState(['all']);
+  const [messengerExpanded, setMessengerExpanded] = useState(false);
+  const [messengerInput, setMessengerInput] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([
+    { 
+      id: 1, 
+      name: '김철수', 
+      status: 'online', 
+      avatar: 'KCS',
+      avatarColor: 'from-blue-500 to-blue-600',
+      title: '프로젝트 매니저',
+      lastSeen: null
+    },
+    { 
+      id: 2, 
+      name: '이영희', 
+      status: 'away', 
+      avatar: 'LYH',
+      avatarColor: 'from-green-500 to-green-600',
+      title: '프론트엔드 개발자',
+      lastSeen: '5분 전'
+    },
+    { 
+      id: 3, 
+      name: '박민수', 
+      status: 'online', 
+      avatar: 'PMS',
+      avatarColor: 'from-purple-500 to-purple-600',
+      title: '백엔드 개발자',
+      lastSeen: null
+    },
+    { 
+      id: 4, 
+      name: '최지원', 
+      status: 'offline', 
+      avatar: 'CJW',
+      avatarColor: 'from-pink-500 to-pink-600',
+      title: 'UI/UX 디자이너',
+      lastSeen: '2시간 전'
+    },
+    { 
+      id: 5, 
+      name: '정민호', 
+      status: 'busy', 
+      avatar: 'JMH',
+      avatarColor: 'from-orange-500 to-orange-600',
+      title: 'DevOps 엔지니어',
+      lastSeen: null
+    }
+  ]);
+  const [favorites, setFavorites] = useState([]);
+  const [favoritesCollapsed, setFavoritesCollapsed] = useState(false);
+  const [showUserList, setShowUserList] = useState(false);
+  const [showMenuBar, setShowMenuBar] = useState(true);
+  const [userListCollapsed, setUserListCollapsed] = useState(false);
+  const [selectedMenuItem, setSelectedMenuItem] = useState('home');
+  const [advancedSearchOpen, setAdvancedSearchOpen] = useState(false);
+  const [backupPanelOpen, setBackupPanelOpen] = useState(false);
+  const [securityPanelOpen, setSecurityPanelOpen] = useState(false);
+  const [optimizePanelOpen, setOptimizePanelOpen] = useState(false);
+  const [cloudPanelOpen, setCloudPanelOpen] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [recentFiles, setRecentFiles] = useState([]);
+  const [duplicateFiles, setDuplicateFiles] = useState([]);
+  const [encryptedFiles, setEncryptedFiles] = useState([]);
+  const [searchParams, setSearchParams] = useState({
+    filename: '',
+    extensions: [],
+    minSize: '',
+    maxSize: '',
+    startDate: '',
+    endDate: ''
+  });
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [userProfilePopup, setUserProfilePopup] = useState({ show: false, user: null, x: 0, y: 0 });
+  const [currentUserActivity, setCurrentUserActivity] = useState({
+    viewingFile: null,
+    lastAction: null,
+    timestamp: null
+  });
+  const fileInputRef = useRef(null);
+
+  // 유저 프로필 정보
+  const [userProfile] = useState({
+    name: '홍길동',
+    avatar: '🦸‍♂️',
+    status: 'online',
+    email: 'hong@company.com',
+  });
+
+  // 파일 필터 시스템 (기존 빠른 액세스 개선)
+  const fileFilters = [
+    { 
+      id: 'all', 
+      label: '모든 파일', 
+      icon: FolderIcon, 
+      color: 'text-gray-500',
+      gradient: 'from-gray-500 to-gray-600',
+      filter: () => true
+    },
+    { 
+      id: 'recent', 
+      label: '최근 파일', 
+      icon: ClockIcon, 
+      color: 'text-violet-500',
+      gradient: 'from-violet-500 to-purple-500',
+      filter: (file) => {
+        const fileDate = new Date(file.modified);
+        const now = new Date();
+        const daysDiff = (now - fileDate) / (1000 * 60 * 60 * 24);
+        return daysDiff <= 7; // 7일 이내
+      }
+    },
+    { 
+      id: 'group', 
+      label: '그룹', 
+      icon: ViewColumnsIcon, 
+      color: 'text-emerald-500',
+      gradient: 'from-emerald-500 to-teal-500',
+      filter: () => true // 모든 파일 표시하되 그룹으로 나누어 표시
+    },
+    { 
+      id: 'images', 
+      label: '이미지', 
+      icon: PhotoIcon, 
+      color: 'text-pink-500',
+      gradient: 'from-pink-500 to-rose-500',
+      filter: (file) => /\.(jpg|jpeg|png|gif|bmp|svg|webp|tiff|tif|ico|psd|ai|eps|raw|cr2|nef|dng)$/i.test(file.name)
+    },
+    { 
+      id: 'documents', 
+      label: '문서', 
+      icon: DocumentTextIcon, 
+      color: 'text-blue-500',
+      gradient: 'from-blue-500 to-indigo-500',
+      filter: (file) => /\.(pdf|doc|docx|txt|rtf|odt|xls|xlsx|ppt|pptx|pages|numbers|keynote|md|tex)$/i.test(file.name)
+    },
+    { 
+      id: 'videos', 
+      label: '동영상', 
+      icon: FilmIcon, 
+      color: 'text-purple-500',
+      gradient: 'from-purple-500 to-violet-500',
+      filter: (file) => /\.(mp4|avi|mov|mkv|wmv|flv|webm|m4v|3gp|ogv|mpg|mpeg|m2v|vob)$/i.test(file.name)
+    },
+    { 
+      id: 'music', 
+      label: '음악', 
+      icon: MusicalNoteIcon, 
+      color: 'text-green-500',
+      gradient: 'from-green-500 to-emerald-500',
+      filter: (file) => /\.(mp3|wav|flac|aac|ogg|wma|m4a|opus|ape|mka)$/i.test(file.name)
+    },
+    { 
+      id: 'code', 
+      label: '코드', 
+      icon: CodeBracketIcon, 
+      color: 'text-orange-500',
+      gradient: 'from-orange-500 to-red-500',
+      filter: (file) => /\.(js|jsx|ts|tsx|py|java|cpp|c|h|html|css|scss|sass|php|rb|go|rs|swift|kt|scala|pl|sh|bat|ps1|sql|json|xml|yaml|yml|toml|ini|cfg|conf)$/i.test(file.name)
+    },
+    { 
+      id: 'cad', 
+      label: 'CAD/3D', 
+      icon: CubeIcon, 
+      color: 'text-emerald-500',
+      gradient: 'from-emerald-500 to-green-500',
+      filter: (file) => /\.(dwg|dxf|dwf|skp|step|stp|iges|igs|catpart|catproduct|prt|asm|ipt|iam|sldprt|sldasm|slddrw|3dm|rvt|rfa|rte|rft|fcstd)$/i.test(file.name)
+    },
+    { 
+      id: 'executable', 
+      label: '실행파일', 
+      icon: CpuChipIcon, 
+      color: 'text-red-500',
+      gradient: 'from-red-500 to-pink-500',
+      filter: (file) => /\.(exe|msi|dmg|pkg|deb|rpm|app|apk|ipa|run|bin|com|scr|bat|cmd|ps1|vbs|jar|war)$/i.test(file.name)
+    },
+    { 
+      id: 'archives', 
+      label: '압축파일', 
+      icon: ArchiveBoxIcon, 
+      color: 'text-yellow-500',
+      gradient: 'from-yellow-500 to-amber-500',
+      filter: (file) => /\.(zip|rar|7z|tar|gz|bz2|xz|lzma|iso|dmg|img|vhd|vmdk|ova|cab|ace|lha)$/i.test(file.name)
+    },
+    { 
+      id: 'system', 
+      label: '시스템', 
+      icon: Cog6ToothIcon, 
+      color: 'text-slate-500',
+      gradient: 'from-slate-500 to-gray-500',
+      filter: (file) => /\.(dll|sys|drv|ini|cfg|conf|log|tmp|cache|dat|db|sqlite|reg|lnk|url|desktop)$/i.test(file.name)
+    },
+    { 
+      id: 'fonts', 
+      label: '폰트', 
+      icon: LanguageIcon, 
+      color: 'text-indigo-500',
+      gradient: 'from-indigo-500 to-purple-500',
+      filter: (file) => /\.(ttf|otf|woff|woff2|eot|fon|pfb|pfm|afm)$/i.test(file.name)
+    }
+  ];
+
+  // 기본 시스템 폴더들 (자동으로 즐겨찾기에 추가될 항목들)
+  const defaultSystemFolders = [
+    { 
+      id: 'desktop', 
+      label: '바탕화면', 
+      icon: ComputerDesktopIcon, 
+      gradient: 'from-blue-500 to-cyan-500',
+      path: process.env.USERPROFILE ? `${process.env.USERPROFILE}\\Desktop` : 'C:\\Users\\Public\\Desktop',
+      type: 'system'
+    },
+    { 
+      id: 'documents', 
+      label: '문서', 
+      icon: DocumentIcon, 
+      gradient: 'from-orange-500 to-red-500',
+      path: process.env.USERPROFILE ? `${process.env.USERPROFILE}\\Documents` : 'C:\\Users\\Public\\Documents',
+      type: 'system'
+    },
+    { 
+      id: 'downloads', 
+      label: '다운로드', 
+      icon: ArrowDownTrayIcon, 
+      gradient: 'from-green-500 to-emerald-500',
+      path: process.env.USERPROFILE ? `${process.env.USERPROFILE}\\Downloads` : 'C:\\Users\\Public\\Downloads',
+      type: 'system'
+    }
+  ];
+
+  const getThisPC = () => [
+    { 
+      id: 'user-folder', 
+      label: userProfile.name, 
+      icon: UserSolidIcon, 
+      gradient: 'from-blue-400 to-blue-600',
+      path: process.env.USERPROFILE || 'C:\\Users\\Public',
+      type: 'user'
+    }
+  ];
+
+  // AI 기능 메뉴
+  const aiFeatures = [
+    { 
+      id: 'ai-copilot', 
+      label: 'AI 코파일럿', 
+      icon: SparklesIcon,
+      gradient: 'from-purple-500 to-pink-500',
+      description: '자연어로 파일 관리',
+      action: () => setAiChatExpanded(true)
+    },
+    { 
+      id: 'smart-search', 
+      label: '스마트 검색', 
+      icon: MagnifyingGlassIcon,
+      gradient: 'from-blue-500 to-cyan-500',
+      description: 'AI 기반 내용 검색',
+      action: () => setAdvancedSearchOpen(true)
+    },
+    { 
+      id: 'file-analysis', 
+      label: '파일 분석', 
+      icon: CpuChipIcon,
+      gradient: 'from-emerald-500 to-green-500',
+      description: '선택된 파일 AI 분석',
+      action: () => handleSelectedFilesAnalysis('summary')
+    },
+    { 
+      id: 'search-analysis', 
+      label: '검색 결과 분석', 
+      icon: ChartBarIcon,
+      gradient: 'from-orange-500 to-red-500',
+      description: '검색 결과 AI 분석',
+      action: () => handleSearchResultsAnalysis(files, searchQuery || '현재 폴더')
+    },
+    { 
+      id: 'auto-organize', 
+      label: '자동 정리', 
+      icon: BoltIcon,
+      gradient: 'from-yellow-500 to-orange-500',
+      description: '파일 자동 분류 및 정리',
+      action: () => handleOrganizationRecommendation()
+    },
+    { 
+      id: 'content-analysis', 
+      label: '내용 분석', 
+      icon: DocumentTextIcon,
+      gradient: 'from-indigo-500 to-purple-500',
+      description: '문서 요약 및 분석',
+      action: () => handleSelectedFilesAnalysis('classification')
+    }
+  ];
+
+  // 프로페셔널 툴
+  const professionalTools = [
+    { id: 'backup', label: '백업', icon: CloudIcon, color: 'text-blue-500' },
+    { id: 'security', label: '보안', icon: ShieldCheckIcon, color: 'text-red-500' },
+    { id: 'sync', label: '동기화', icon: ArrowPathIcon, color: 'text-indigo-500' },
+    { id: 'analytics', label: '분석', icon: ChartBarIcon, color: 'text-green-500' }
+  ];
+
+  // 메뉴바 아이템들 (백엔드 기능 연동)
+  const menuItems = [
+    { id: 'home', icon: HomeIcon, label: '홈', color: 'text-blue-500' },
+    { id: 'search', icon: MagnifyingGlassIcon, label: '고급 검색', color: 'text-green-500' },
+    { id: 'backup', icon: CloudIcon, label: '백업', color: 'text-purple-500' },
+    { id: 'security', icon: ShieldCheckIcon, label: '보안', color: 'text-red-500' },
+    { id: 'optimize', icon: BoltIcon, label: '최적화', color: 'text-yellow-500' },
+    { id: 'cloud', icon: GlobeAltIcon, label: '클라우드', color: 'text-indigo-500' },
+    { id: 'settings', icon: Cog6ToothIcon, label: '설정', color: 'text-gray-500' }
+  ];
+
+  useEffect(() => {
+    initializeExplorer();
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setDarkMode(mediaQuery.matches);
+    
+    const handleChange = (e) => setDarkMode(e.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // 폴더 이동 시 필터 초기화
+  useEffect(() => {
+    setActiveFilters(['all']);
+  }, [currentPath]);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+  // 즐겨찾기가 10개 이상일 때 자동으로 접기
+  useEffect(() => {
+    if (favorites.length >= 10 && !favoritesCollapsed) {
+      setFavoritesCollapsed(true);
+    }
+  }, [favorites.length]);
+
+  const initializeExplorer = async () => {
+    try {
+      const drivesList = await electronAPI.listDrives();
+      setDrives(drivesList);
+      
+      // 기본 시스템 폴더들을 즐겨찾기에 추가
+      if (favorites.length === 0) {
+        setFavorites(defaultSystemFolders.map(folder => ({
+          ...folder,
+          id: `default-${folder.id}`,
+          type: 'default'
+        })));
+      }
+      
+      // 기본적으로 Desktop부터 시작
+      const defaultPath = defaultSystemFolders[0].path;
+      setCurrentPath(defaultPath);
+      loadFiles(defaultPath);
+      updateBreadcrumbs(defaultPath);
+    } catch (error) {
+      console.error('초기화 실패:', error);
+    }
+  };
+
+  const updateBreadcrumbs = (path) => {
+    const parts = path.split(/[\\/]/).filter(Boolean);
+    const breadcrumbItems = [];
+    let currentPath = '';
+    
+    parts.forEach((part, index) => {
+      currentPath += (index === 0 ? '' : '\\') + part;
+      breadcrumbItems.push({
+        name: part,
+        path: currentPath
+      });
+    });
+    
+    setBreadcrumbs(breadcrumbItems);
+  };
+
+  const handleQuickAccessClick = async (folder) => {
+    try {
+      setCurrentPath(folder.path);
+      await loadFiles(folder.path);
+      updateBreadcrumbs(folder.path);
+    } catch (error) {
+      console.error('폴더 접근 실패:', error);
+    }
+  };
+
+  // 즐겨찾기 관련 함수들
+  const toggleFavorite = (item) => {
+    const isCurrentlyFavorite = favorites.some(fav => fav.path === item.path);
+    
+    if (isCurrentlyFavorite) {
+      // 즐겨찾기에서 제거
+      setFavorites(prev => prev.filter(fav => fav.path !== item.path));
+    } else {
+      // 즐겨찾기에 추가
+      const favoriteItem = {
+        id: `fav-${Date.now()}`,
+        label: item.isDirectory ? item.name : item.name.split('\\').pop(),
+        path: item.path || item.fullPath,
+        icon: item.isDirectory ? FolderIcon : getFileIcon(item),
+        gradient: 'from-yellow-400 to-orange-500',
+        type: 'favorite',
+        addedAt: new Date()
+      };
+      setFavorites(prev => [...prev, favoriteItem]);
+    }
+  };
+
+  const isFavorite = (path) => {
+    return favorites.some(fav => fav.path === path);
+  };
+
+  // 메뉴 아이템 클릭 핸들러
+  const handleMenuClick = (menuId) => {
+    setSelectedMenuItem(menuId);
+    
+    // 기존 패널들 모두 닫기
+    setAdvancedSearchOpen(false);
+    setBackupPanelOpen(false);
+    setSecurityPanelOpen(false);
+    setOptimizePanelOpen(false);
+    setCloudPanelOpen(false);
+    
+    // 선택된 메뉴에 따라 패널 열기
+    switch (menuId) {
+      case 'search':
+        setAdvancedSearchOpen(true);
+        break;
+      case 'backup':
+        setBackupPanelOpen(true);
+        loadBackupData();
+        break;
+      case 'security':
+        setSecurityPanelOpen(true);
+        loadEncryptedFiles();
+        break;
+      case 'optimize':
+        setOptimizePanelOpen(true);
+        loadOptimizeData();
+        break;
+      case 'cloud':
+        setCloudPanelOpen(true);
+        loadCloudStorageData();
+        break;
+      default:
+        break;
+    }
+  };
+
+  // 백엔드 API 호출 함수들
+  const loadBackupData = async () => {
+    try {
+      const response = await apiFetch('/api/backup/list', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      console.log('백업 데이터 로딩 완료:', response);
+    } catch (error) {
+      console.error('백업 데이터 로드 실패:', error);
+    }
+  };
+
+  const loadOptimizeData = async () => {
+    try {
+      const response = await apiFetch('/api/optimize/duplicates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath })
+      });
+      setDuplicateFiles(response.duplicates || []);
+    } catch (error) {
+      console.error('최적화 데이터 로드 실패:', error);
+    }
+  };
+
+  const handleAdvancedSearch = async () => {
+    setSearchLoading(true);
+    try {
+      const response = await apiFetch('/api/search/advanced', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          path: currentPath,
+          filename: searchParams.filename,
+          extensions: searchParams.extensions,
+          minSize: searchParams.minSize,
+          maxSize: searchParams.maxSize,
+          startDate: searchParams.startDate,
+          endDate: searchParams.endDate
+        })
+      });
+      setSearchResults(response.results || []);
+      setFiles(response.results || []);
+      setAdvancedSearchOpen(false);
+    } catch (error) {
+      console.error('고급 검색 실패:', error);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const handleEncryptFile = async (filePath) => {
+    try {
+      const response = await apiFetch('/api/security/encrypt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filePath, password: 'default' })
+      });
+      if (response.success) {
+        await loadEncryptedFiles();
+      }
+    } catch (error) {
+      console.error('파일 암호화 실패:', error);
+    }
+  };
+
+  const handleDecryptFile = async (filePath) => {
+    try {
+      const response = await apiFetch('/api/security/decrypt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filePath, password: 'default' })
+      });
+      if (response.success) {
+        await loadEncryptedFiles();
+      }
+    } catch (error) {
+      console.error('파일 복호화 실패:', error);
+    }
+  };
+
+  const loadEncryptedFiles = async () => {
+    try {
+      const response = await apiFetch('/api/security/list-encrypted', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath })
+      });
+      setEncryptedFiles(response.files || []);
+    } catch (error) {
+      console.error('암호화 파일 목록 로딩 실패:', error);
+    }
+  };
+
+  const handleCreateBackup = async () => {
+    try {
+      const response = await apiFetch('/api/backup/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath })
+      });
+      if (response.success) {
+        console.log('백업 생성 완료');
+      }
+    } catch (error) {
+      console.error('백업 생성 실패:', error);
+    }
+  };
+
+  const handleRestoreBackup = async () => {
+    try {
+      const response = await apiFetch('/api/backup/restore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath })
+      });
+      if (response.success) {
+        console.log('백업 복원 완료');
+        await loadFiles(currentPath);
+      }
+    } catch (error) {
+      console.error('백업 복원 실패:', error);
+    }
+  };
+
+
+  const loadCloudStorageData = async () => {
+    try {
+      const response = await apiFetch('/api/cloud/storage/status', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      console.log('클라우드 스토리지 상태:', response);
+    } catch (error) {
+      console.error('클라우드 스토리지 데이터 로드 실패:', error);
+    }
+  };
+
+  const handleCloudSync = async (provider) => {
+    try {
+      const response = await apiFetch(`/api/cloud/${provider}/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: currentPath })
+      });
+      if (response.success) {
+        console.log(`${provider} 동기화 완료`);
+      }
+    } catch (error) {
+      console.error(`${provider} 동기화 실패:`, error);
+    }
+  };
+
+  const handleCloudUpload = async (provider) => {
+    try {
+      const response = await apiFetch(`/api/cloud/${provider}/upload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          files: selectedFiles.map(f => f.path),
+          targetPath: currentPath 
+        })
+      });
+      if (response.success) {
+        console.log(`${provider} 업로드 완료`);
+      }
+    } catch (error) {
+      console.error(`${provider} 업로드 실패:`, error);
+    }
+  };
+
+  // 사용자 활동 브로드캐스트
+  const broadcastUserActivity = async (activity) => {
+    try {
+      // 실제로는 WebSocket이나 SSE로 전송
+      await apiFetch('/api/user/activity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'current-user',
+          ...activity
+        })
+      });
+    } catch (error) {
+      console.error('사용자 활동 전송 실패:', error);
+    }
+  };
+
+  // 사용자 프로필 클릭 핸들러
+  const handleUserProfileClick = (user, event) => {
+    event.stopPropagation();
+    const rect = event.currentTarget.getBoundingClientRect();
+    console.log('사용자 프로필 클릭:', user.name);
+    setUserProfilePopup({
+      show: true,
+      user: user,
+      x: rect.right + 10,
+      y: rect.top
+    });
+  };
+
+  // 시간 포맷 함수
+  const formatTimeAgo = (timestamp) => {
+    const now = new Date();
+    const diff = now - new Date(timestamp);
+    const minutes = Math.floor(diff / 60000);
+    
+    if (minutes < 1) return '방금 전';
+    if (minutes < 60) return `${minutes}뵔 전`;
+    if (minutes < 1440) return `${Math.floor(minutes / 60)}시간 전`;
+    return `${Math.floor(minutes / 1440)}일 전`;
+  };
+
+  // 메시지 전송 함수
+  const sendMessageToUser = (userId, message) => {
+    const targetUser = onlineUsers.find(u => u.id === userId);
+    if (targetUser) {
+      const newMessage = {
+        id: Date.now(),
+        sender: '나',
+        recipient: targetUser.name,
+        content: message,
+        timestamp: new Date(),
+        type: 'direct'
+      };
+      setMessages(prev => [...prev, newMessage]);
+      setMessengerExpanded(true);
+      setUserProfilePopup({ show: false, user: null, x: 0, y: 0 });
+    }
+  };
+
+  // 파일 공유 함수
+  const shareFileWithUser = (userId, file) => {
+    const targetUser = onlineUsers.find(u => u.id === userId);
+    if (targetUser && file) {
+      const shareMessage = {
+        id: Date.now(),
+        sender: '나',
+        recipient: targetUser.name,
+        content: `파일을 공유합니다: ${file}`,
+        timestamp: new Date(),
+        type: 'file-share',
+        file: file
+      };
+      setMessages(prev => [...prev, shareMessage]);
+      setMessengerExpanded(true);
+      setUserProfilePopup({ show: false, user: null, x: 0, y: 0 });
+    }
+  };
+
+  // AI 분석 기능
+  const handleAIAnalysis = async (file, type) => {
+    setLoading(true);
+    try {
+      let analysisType = type === '요약' ? 'summary' : 'analysis';
+      
+      // 새로운 AI 분석 API 사용
+      const result = await analyzeFilesAI([file], analysisType, {
+        currentPath: currentPath,
+        selectedFiles: selectedFiles
+      });
+      
+      if (result.success) {
+        setAiResult({
+          type: analysisType,
+          file: file.name,
+          content: result.analysis || `${file.name} 파일에 대한 AI ${type} 결과입니다.`,
+          timestamp: new Date(),
+          usage: result.usage
+        });
+      } else {
+        // 폴백: 기존 API 사용
+        const fallbackResult = await getAISummary(`이 파일을 ${type}해주세요: ${file.name}`);
+        setAiResult({
+          type: analysisType,
+          file: file.name,
+          content: fallbackResult || `${file.name} 파일에 대한 AI ${type} 결과입니다.`,
+          timestamp: new Date()
+        });
+      }
+      
+      setAiChatExpanded(true);
+    } catch (error) {
+      console.error(`AI ${type} 실패:`, error);
+      setAiResult({
+        type: 'error',
+        content: `AI ${type} 중 오류가 발생했습니다: ${error.message}`,
+        timestamp: new Date()
+      });
+    } finally {
+      setLoading(false);
+    }
+    setContextMenu({ show: false, x: 0, y: 0, target: null });
+  };
+
+  /**
+   * 선택된 파일들에 대한 AI 분석
+   */
+  const handleSelectedFilesAnalysis = async (analysisType = 'summary') => {
+    if (selectedFiles.length === 0) {
+      setAiResult({
+        type: 'error',
+        content: '분석할 파일을 선택해주세요.',
+        timestamp: new Date()
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await analyzeFilesAI(selectedFiles, analysisType, {
+        currentPath: currentPath,
+        totalFiles: files.length
+      });
+      
+      if (result.success) {
+        setAiResult({
+          type: analysisType,
+          files: selectedFiles.map(f => f.name),
+          content: result.analysis,
+          timestamp: new Date(),
+          usage: result.usage
+        });
+      } else {
+        setAiResult({
+          type: 'error',
+          content: 'AI 분석에 실패했습니다.',
+          timestamp: new Date()
+        });
+      }
+      
+      setAiChatExpanded(true);
+    } catch (error) {
+      console.error('선택 파일 AI 분석 실패:', error);
+      setAiResult({
+        type: 'error',
+        content: `AI 분석 중 오류가 발생했습니다: ${error.message}`,
+        timestamp: new Date()
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * 검색 결과 AI 분석
+   */
+  const handleSearchResultsAnalysis = async (searchResults, query) => {
+    if (!searchResults || searchResults.length === 0) {
+      setAiResult({
+        type: 'error',
+        content: '분석할 검색 결과가 없습니다.',
+        timestamp: new Date()
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await analyzeSearchResultsAI(searchResults, query, {
+        currentPath: currentPath,
+        totalFiles: files.length
+      });
+      
+      if (result.success) {
+        setAiResult({
+          type: 'search-analysis',
+          query: query,
+          content: result.analysis,
+          timestamp: new Date(),
+          usage: result.usage
+        });
+      } else {
+        setAiResult({
+          type: 'error',
+          content: '검색 결과 분석에 실패했습니다.',
+          timestamp: new Date()
+        });
+      }
+      
+      setAiChatExpanded(true);
+    } catch (error) {
+      console.error('검색 결과 AI 분석 실패:', error);
+      setAiResult({
+        type: 'error',
+        content: `검색 결과 분석 중 오류가 발생했습니다: ${error.message}`,
+        timestamp: new Date()
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * 파일 정리 추천
+   */
+  const handleOrganizationRecommendation = async () => {
+    if (files.length === 0) {
+      setAiResult({
+        type: 'error',
+        content: '정리할 파일이 없습니다.',
+        timestamp: new Date()
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await recommendOrganizationAI(files, currentPath, {
+        preferences: {
+          autoOrganize: true,
+          keepOriginalStructure: false,
+          createBackup: true
+        }
+      });
+      
+      if (result.success) {
+        setAiResult({
+          type: 'organization',
+          content: result.recommendation,
+          timestamp: new Date(),
+          usage: result.usage
+        });
+      } else {
+        setAiResult({
+          type: 'error',
+          content: '파일 정리 추천에 실패했습니다.',
+          timestamp: new Date()
+        });
+      }
+      
+      setAiChatExpanded(true);
+    } catch (error) {
+      console.error('파일 정리 추천 실패:', error);
+      setAiResult({
+        type: 'error',
+        content: `파일 정리 추천 중 오류가 발생했습니다: ${error.message}`,
+        timestamp: new Date()
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 전역 클릭 이벤트 리스너
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      if (userProfilePopup.show) {
+        setUserProfilePopup({ show: false, user: null, x: 0, y: 0 });
+      }
+    };
+    
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, [userProfilePopup.show]);
+
+  const performAdvancedSearch = async (searchParams) => {
+    try {
+      const response = await apiFetch('/api/search/advanced', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(searchParams)
+      });
+      const results = response.results || [];
+      setFiles(results);
+      
+      // 검색 히스토리에 추가
+      setSearchHistory(prev => [...prev, { query: searchParams, timestamp: new Date() }]);
+    } catch (error) {
+      console.error('고급 검색 실패:', error);
+    }
+  };
+
+  const handleDriveClick = (drive) => {
+    let path = drive.name;
+    // 드라이브 루트(C:, D: 등)일 경우 반드시 C:\ 형태로 보정
+    if (/^[A-Z]:$/i.test(path)) {
+      path = path + '\\';
+    }
+    setCurrentPath(path);
+    loadFiles(path);
+    updateBreadcrumbs(path);
+  };
+
+  const handleBreadcrumbClick = (path) => {
+    setCurrentPath(path);
+    loadFiles(path);
+    updateBreadcrumbs(path);
+  };
+
+  const loadFiles = async (dirPath) => {
+    setLoading(true);
+    try {
+      const result = await electronAPI.listFiles(dirPath);
+      if (result.error) {
+        setFiles([]);
+        setAiResult({ type: 'error', content: result.error });
+        setLoading(false);
+        return;
+      }
+      const list = result.files || result;
+      const sortedFiles = sortFiles(list, sortBy, sortOrder);
+      setFiles(sortedFiles);
+      setPreview(null);
+      setAiResult(null);
+      setSelectedFiles([]);
+    } catch (e) {
+      setAiResult({ type: 'error', content: '파일 목록 로드 실패: ' + e.message });
+    }
+    setLoading(false);
+  };
+
+  const sortFiles = (files, sortBy, sortOrder) => {
+    return [...files].sort((a, b) => {
+      let comparison = 0;
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name);
+          break;
+        case 'size':
+          comparison = (a.size || 0) - (b.size || 0);
+          break;
+        case 'modified':
+          comparison = new Date(a.modified || 0) - new Date(b.modified || 0);
+          break;
+        case 'type':
+          const aExt = a.name.split('.').pop() || '';
+          const bExt = b.name.split('.').pop() || '';
+          comparison = aExt.localeCompare(bExt);
+          break;
+        default:
+          comparison = 0;
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  };
+
+  const handleFileClick = async (file) => {
+    if (file.isDirectory) {
+      setCurrentPath(file.path);
+      loadFiles(file.path);
+      updateBreadcrumbs(file.path);
+      return;
+    }
+    
+    // 현재 사용자 활동 업데이트
+    setCurrentUserActivity({
+      viewingFile: file.name,
+      lastAction: '파일 열람 중',
+      timestamp: new Date()
+    });
+    
+    // 실시간 활동 브로드캐스트
+    broadcastUserActivity({
+      fileName: file.name,
+      filePath: file.path,
+      action: '파일 열람 중',
+      timestamp: new Date()
+    });
+    
+    try {
+      // 파일 미리보기 개선
+      const res = await electronAPI.readFile(file.path);
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      
+      let previewContent = res.content;
+      let previewType = 'text';
+      
+      // 파일 타입별 미리보기 처리
+      if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(fileExt)) {
+        previewType = 'image';
+        previewContent = file.path; // 이미지 경로
+      } else if (['mp4', 'avi', 'mov', 'mkv', 'wmv'].includes(fileExt)) {
+        previewType = 'video';
+        previewContent = file.path;
+      } else if (['mp3', 'wav', 'flac', 'aac', 'ogg'].includes(fileExt)) {
+        previewType = 'audio';
+        previewContent = file.path;
+      } else if (['pdf'].includes(fileExt)) {
+        previewType = 'pdf';
+        previewContent = res.content.slice(0, 1000); // PDF 텍스트 일부
+      } else {
+        previewType = 'text';
+        previewContent = res.content.slice(0, 5000); // 텍스트 파일
+      }
+      
+      setPreview({ 
+        ...file, 
+        content: previewContent, 
+        type: previewType,
+        fullPath: file.path
+      });
+      setAiResult(null);
+    } catch (e) {
+      console.error('파일 읽기 실패:', e);
+      setPreview({ 
+        ...file, 
+        content: '파일을 읽을 수 없습니다.', 
+        type: 'error',
+        fullPath: file.path
+      });
+    }
+  };
+
+  const handleFileSelect = (file, event) => {
+    if (event.ctrlKey || event.metaKey) {
+      setSelectedFiles(prev => 
+        prev.find(f => f.path === file.path)
+          ? prev.filter(f => f.path !== file.path)
+          : [...prev, file]
+      );
+    } else {
+      setSelectedFiles([file]);
+    }
+  };
+
+  const handleFileDoubleClick = (file) => {
+    if (file.isDirectory) {
+      handleFileClick(file);
+    } else {
+      // 파일 열기 (시스템 기본 프로그램으로)
+      openFileWithDefaultProgram(file);
+    }
+  };
+
+  // 시스템 기본 프로그램으로 파일 열기
+  const openFileWithDefaultProgram = async (file) => {
+    try {
+      // Electron API를 사용하여 파일 실행
+      if (electronAPI && electronAPI.openFile) {
+        await electronAPI.openFile(file.path);
+      } else if (electronAPI && electronAPI.shell) {
+        // shell.openPath를 사용하여 파일 실행
+        await electronAPI.shell.openPath(file.path);
+      } else {
+        // 웹 환경에서는 window.open 사용
+        window.open(file.path, '_blank');
+      }
+      
+      // 사용자 활동 업데이트
+      setCurrentUserActivity({
+        viewingFile: file.name,
+        lastAction: '파일 실행',
+        timestamp: new Date()
+      });
+      
+      broadcastUserActivity({
+        fileName: file.name,
+        action: '파일 실행',
+        timestamp: new Date()
+      });
+    } catch (error) {
+      console.error('파일 실행 실패:', error);
+      // 대체 방법: 미리보기로 전환
+      handleFileClick(file);
+    }
+  };
+
+  const handleContextMenu = (event, file) => {
+    event.preventDefault();
+    setContextMenu({
+      show: true,
+      x: window.innerWidth - 320, // 우측에 고정 위치
+      y: Math.min(event.clientY, window.innerHeight - 400), // 화면 밖으로 나가지 않게
+      target: file
+    });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    
+    const files = Array.from(e.dataTransfer.files);
+    console.log('드롭된 파일들:', files);
+  };
+
+  const handleSendChat = async () => {
+    if (!chatInput.trim()) return;
+    setChatHistory(prev => [...prev, { role: 'user', content: chatInput }]);
+    const userInput = chatInput;
+    setChatInput('');
+    setAiThinking(true);
+    try {
+      // 시스템 폴더명 한글/영문 매핑 (실제 사용자 프로필 경로 활용)
+      const getUserProfile = () => {
+        try {
+          return require('os').homedir();
+        } catch (e) {
+          return process.env.USERPROFILE || process.env.HOME || 'C:\\Users\\Public';
+        }
+      };
+      
+      const userProfile = getUserProfile();
+      const systemFolderMap = {
+        '바탕화면': `${userProfile}\\Desktop`,
+        '문서': `${userProfile}\\Documents`,
+        '다운로드': `${userProfile}\\Downloads`,
+        '사진': `${userProfile}\\Pictures`,
+        '음악': `${userProfile}\\Music`,
+        '동영상': `${userProfile}\\Videos`,
+        'desktop': `${userProfile}\\Desktop`,
+        'documents': `${userProfile}\\Documents`,
+        'downloads': `${userProfile}\\Downloads`,
+        'pictures': `${userProfile}\\Pictures`,
+        'music': `${userProfile}\\Music`,
+        'videos': `${userProfile}\\Videos`,
+        // 대체 경로들
+        'download': `${userProfile}\\Downloads`,
+        '다운': `${userProfile}\\Downloads`,
+        'picture': `${userProfile}\\Pictures`,
+        'photo': `${userProfile}\\Pictures`,
+        'image': `${userProfile}\\Pictures`,
+      };
+      // 자연어에서 폴더 경로 추출 함수
+      function extractTargetDirectory(query) {
+        for (const [keyword, path] of Object.entries(systemFolderMap)) {
+          if (query.toLowerCase().includes(keyword.toLowerCase())) {
+            return path;
+          }
+        }
+        const pathRegex = /([A-Z]:[\\/][^\s"']*)/i;
+        const match = query.match(pathRegex);
+        if (match) return match[1].replace(/\//g, '\\');
+        return null;
+      }
+      let plan = await getAIPlan(userInput);
+      if (typeof plan === 'string' && plan.trim().startsWith('{')) {
+        plan = JSON.parse(plan);
+      }
+      if (!plan || !plan.action) {
+        throw new Error('AI 플랜이 올바르지 않습니다.');
+      }
+      let action = plan.action || '';
+      // targetDirectory 추출을 try문 안에서 실행 (우선순위: 자연어 추출 > 현재 경로 > AI 플랜)
+      let targetDirectory = extractTargetDirectory(userInput) || currentPath || plan.targetDirectory || 'C:\\';
+      
+      // 디버깅 정보 출력
+      console.log('사용자 입력:', userInput);
+      console.log('추출된 경로:', extractTargetDirectory(userInput));
+      console.log('현재 경로:', currentPath);
+      console.log('AI 플랜 경로:', plan.targetDirectory);
+      console.log('최종 대상 경로:', targetDirectory);
+      // 무제한 깊이 재귀 탐색 (기존 작동하던 로직 개선)
+      async function getAllFilesRecursive(dir, depth = 0, maxDepth = Infinity) {
+        if (depth > maxDepth) return [];
+        let allFiles = [];
+        try {
+          console.log(`탐색 중: ${dir} (깊이: ${depth})`);
+          const result = await electronAPI.listFiles(dir);
+          const list = result.files || result || [];
+          
+          console.log(`${dir}에서 ${list.length}개 항목 발견`);
+          
+          for (const f of list) {
+            if (f.isDirectory) {
+              try {
+                // 재귀적으로 하위 디렉토리 탐색 (무제한 깊이)
+                const subFiles = await getAllFilesRecursive(f.path, depth + 1, maxDepth);
+                allFiles = allFiles.concat(subFiles);
+              } catch (subError) {
+                console.warn(`하위 폴더 탐색 실패: ${f.path}`, subError.message);
+              }
+            } else {
+              allFiles.push(f);
+            }
+          }
+        } catch (e) {
+          console.error(`폴더 접근 실패: ${dir}`, e.message);
+        }
+        return allFiles;
+      }
+      let resultMsg = '';
+      let actionPerformed = false;
+      if (action === 'searchFiles' || action === 'listFiles') {
+        try {
+          // 자연어에서 확장자와 검색 패턴 추출
+          const extractedExtensions = extractExtensionsFromQuery(userInput);
+          const planFilters = plan.filters || [];
+          const searchPattern = plan.searchTerm || '';
+          const advFilters = extractAdvancedFilters(userInput);
+          
+          // 이미지 파일 확장자 보강 (AI가 놓칠 수 있는 확장자들 추가)
+          const allImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp', 'tiff', 'tif', 'ico', 'psd', 'ai', 'eps', 'raw', 'cr2', 'nef', 'dng', 'heic', 'heif'];
+          
+          // 1. "모든 파일" 등 명령이거나, 필터가 없으면 전체 파일 반환
+          const isAllFilesQuery = /모든 파일|전체|상관없이|all files|any file|전부|다 보여줘/.test(userInput);
+          
+          // 2. 구체적인 확장자 요청인지 확인
+          const hasSpecificExtension = /\.([a-z0-9]{2,5})/i.test(userInput);
+          const hasSpecificFileType = /pdf|PDF|엑셀|워드|파워포인트|텍스트|이미지|사진|동영상|음악|압축|코드|실행파일/.test(userInput);
+          
+          let fileTypeFilters = [...extractedExtensions, ...planFilters];
+          
+          // 이미지 등 키워드 보강은 기존대로 유지 (구체적인 요청이 없을 때만)
+          if (!hasSpecificExtension && !hasSpecificFileType && (userInput.includes('이미지') || userInput.includes('사진') || userInput.includes('image') || userInput.includes('photo'))) {
+            fileTypeFilters = [...fileTypeFilters, ...allImageExtensions];
+          }
+          
+          fileTypeFilters = [...new Set(fileTypeFilters)];
+          
+          console.log(`🔍 검색 분석:`, {
+            userInput,
+            extractedExtensions,
+            planFilters,
+            fileTypeFilters,
+            hasSpecificExtension,
+            hasSpecificFileType,
+            isAllFilesQuery
+          });
+          
+          let files = await getAllFilesRecursive(targetDirectory, 0, Infinity);
+          
+          // 3. 필터 적용 (정확한 확장자 매칭)
+          if (!isAllFilesQuery && fileTypeFilters.length > 0) {
+            const beforeFilter = files.length;
+            console.log(`📋 적용할 필터들: ${fileTypeFilters.join(', ')}`);
+            
+            files = files.filter(f => {
+              const fileName = f.name.toLowerCase();
+              const fileExt = fileName.split('.').pop() || '';
+              
+              const matches = fileTypeFilters.some(filter => {
+                const filterLower = filter.toLowerCase();
+                return fileExt === filterLower;
+              });
+              
+              if (matches) {
+                console.log(`✅ 매치: ${f.name} (확장자: ${fileExt})`);
+              }
+              
+              return matches;
+            });
+            
+            console.log(`🎯 필터링 완료: ${beforeFilter}개 → ${files.length}개 파일`);
+          }
+          
+          // 4. 결과가 0개면 전체 파일 fallback 안내
+          if (files.length === 0 && !isAllFilesQuery) {
+            const allFiles = await getAllFilesRecursive(targetDirectory, 0, Infinity);
+            resultMsg = `필터에 맞는 파일이 없습니다. 대신 전체 파일 ${allFiles.length}개를 보여드릴게요!`;
+            setFiles(allFiles);
+            actionPerformed = true;
+          } else if (files.length > 0) {
+            // 5. 파일 타입별 적절한 이모지와 메시지 생성
+            let emoji = '📄';
+            let fileType = '파일';
+            
+            if (hasSpecificExtension || hasSpecificFileType) {
+              if (userInput.toLowerCase().includes('pdf')) {
+                emoji = '📕';
+                fileType = 'PDF 파일';
+              } else if (userInput.includes('엑셀') || userInput.includes('xls') || userInput.includes('xlsx')) {
+                emoji = '📊';
+                fileType = '엑셀 파일';
+              } else if (userInput.includes('워드') || userInput.includes('doc') || userInput.includes('docx')) {
+                emoji = '📝';
+                fileType = '워드 파일';
+              } else if (userInput.includes('파워포인트') || userInput.includes('ppt') || userInput.includes('pptx')) {
+                emoji = '📽️';
+                fileType = '파워포인트 파일';
+              } else if (userInput.includes('텍스트') || userInput.includes('txt')) {
+                emoji = '📄';
+                fileType = '텍스트 파일';
+              } else if (userInput.includes('이미지') || userInput.includes('사진') || userInput.includes('image') || userInput.includes('photo')) {
+                emoji = '🖼️';
+                fileType = '이미지 파일';
+              } else if (userInput.includes('동영상') || userInput.includes('video')) {
+                emoji = '🎬';
+                fileType = '동영상 파일';
+              } else if (userInput.includes('음악') || userInput.includes('music')) {
+                emoji = '🎵';
+                fileType = '음악 파일';
+              } else if (userInput.includes('압축')) {
+                emoji = '📦';
+                fileType = '압축 파일';
+              } else if (userInput.includes('코드')) {
+                emoji = '💻';
+                fileType = '코드 파일';
+              } else if (userInput.includes('실행파일')) {
+                emoji = '⚙️';
+                fileType = '실행 파일';
+              }
+            }
+            
+            resultMsg = `✅ ${targetDirectory}에서 ${files.length}개의 ${fileType}을 찾았습니다!\n\n` +
+                       files.slice(0, 10).map(f => `${emoji} ${f.name} (${((f.size || 0) / 1024 / 1024).toFixed(1)}MB)`).join('\n') +
+                       (files.length > 10 ? `\n\n... 그 외 ${files.length - 10}개 더 있습니다.` : '');
+            setFiles(files);
+            actionPerformed = true;
+          } else {
+            resultMsg = `❌ ${targetDirectory} 폴더와 모든 하위 폴더를 검색했지만 조건에 맞는 파일을 찾을 수 없습니다.`;
+            setFiles([]);
+            actionPerformed = true;
+          }
+        } catch (e) {
+          resultMsg = '폴더 접근 중 오류가 발생했습니다.';
+        }
+      }
+      setChatHistory(prev => [...prev, { role: 'ai', content: resultMsg }]);
+      if (actionPerformed && resultMsg) {
+        const aiSummary = await getAISummary(resultMsg);
+        if (aiSummary) {
+          setChatHistory(prev => [...prev, { role: 'ai', content: aiSummary }]);
+        }
+      }
+    } catch (e) {
+      setChatHistory(prev => [...prev, { role: 'ai', content: `죄송합니다. 명령을 처리하는 중 오류가 발생했습니다: ${e.message}` }]);
+    } finally {
+      setAiThinking(false);
+    }
+  };
+
+  // 메신저 메시지 전송
+  const handleSendMessage = () => {
+    if (!messengerInput.trim()) return;
+    
+    const newMessage = {
+      id: Date.now(),
+      sender: '나',
+      content: messengerInput,
+      timestamp: new Date(),
+      type: 'text'
+    };
+    
+    setMessages(prev => [...prev, newMessage]);
+    setMessengerInput('');
+    
+    // 시뮬레이션: 다른 사용자의 응답
+    setTimeout(() => {
+      const responses = [
+        '네, 확인했습니다!',
+        '파일 받았습니다. 감사합니다.',
+        '좋은 아이디어네요!',
+        '지금 검토 중입니다.',
+        '곧 피드백 드리겠습니다.'
+      ];
+      
+      const randomUser = onlineUsers[Math.floor(Math.random() * onlineUsers.length)];
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      
+      const responseMessage = {
+        id: Date.now() + 1,
+        sender: randomUser.name,
+        content: randomResponse,
+        timestamp: new Date(),
+        type: 'text',
+        avatar: randomUser.avatar
+      };
+      
+      setMessages(prev => [...prev, responseMessage]);
+    }, 1000 + Math.random() * 3000);
+  };
+
+  const handleContextMenuAction = (action) => {
+    if (!contextMenu.target) return;
+    
+    switch (action) {
+      case 'preview':
+        handleFileClick(contextMenu.target);
+        break;
+      case 'edit':
+        console.log('편집:', contextMenu.target);
+        break;
+      case 'copy':
+        console.log('복사:', contextMenu.target);
+        break;
+      case 'delete':
+        console.log('삭제:', contextMenu.target);
+        break;
+      case 'share':
+        // 메신저로 파일 공유
+        const shareMessage = {
+          id: Date.now(),
+          sender: '나',
+          content: `파일을 공유합니다: ${contextMenu.target.name}`,
+          timestamp: new Date(),
+          type: 'file',
+          file: contextMenu.target
+        };
+        setMessages(prev => [...prev, shareMessage]);
+        setMessengerExpanded(true);
+        break;
+      case 'ai-summary':
+        // AI 요약 기능
+        handleAIAnalysis(contextMenu.target, '요약');
+        break;
+      case 'ai-analysis':
+        // AI 분석 기능
+        handleAIAnalysis(contextMenu.target, '분석');
+        break;
+    }
+    setContextMenu({ show: false, x: 0, y: 0, target: null });
+  };
+
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      if (contextMenu.show) {
+        setContextMenu({ show: false, x: 0, y: 0, target: null });
+      }
+    };
+
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, [contextMenu.show]);
+
+  // 파일 아이콘 매핑 함수 (SVG fallback)
+  // 윈도우/맥/리눅스 네이티브 아이콘은 getFileThumbnail에서 우선 적용
+  const getFileIcon = (file) => {
+    if (file.isDirectory) return FolderIcon;
+    
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    const iconMap = {
+      'jpg': PhotoIcon, 'jpeg': PhotoIcon, 'png': PhotoIcon, 'gif': PhotoIcon, 'bmp': PhotoIcon, 'svg': PhotoIcon, 'webp': PhotoIcon,
+      'mp4': VideoCameraIcon, 'avi': VideoCameraIcon, 'mov': VideoCameraIcon, 'wmv': VideoCameraIcon, 'mkv': VideoCameraIcon,
+      'mp3': MusicalNoteIcon, 'wav': MusicalNoteIcon, 'flac': MusicalNoteIcon, 'aac': MusicalNoteIcon, 'ogg': MusicalNoteIcon,
+      'pdf': DocumentIcon, 'doc': DocumentIcon, 'docx': DocumentIcon, 'txt': DocumentTextIcon, 'rtf': DocumentIcon,
+      'js': CodeBracketIcon, 'jsx': CodeBracketIcon, 'ts': CodeBracketIcon, 'tsx': CodeBracketIcon, 'py': CodeBracketIcon,
+      'zip': ArchiveBoxIcon, 'rar': ArchiveBoxIcon, '7z': ArchiveBoxIcon, 'tar': ArchiveBoxIcon, 'gz': ArchiveBoxIcon
+    };
+    
+    return iconMap[ext] || DocumentIcon;
+  };
+
+  // 시스템 아이콘 로드 함수 (윈도우/맥/리눅스 네이티브 아이콘 지원)
+  const loadSystemIcon = async (file) => {
+    if (file.isDirectory || fileIcons[file.path]) {
+      return; // 폴더이거나 이미 로드된 경우 스킵
+    }
+    try {
+      // electronAPI.getFileIcon을 통해 base64 아이콘 요청
+      const iconData = await electronAPI.getFileIcon(file.path);
+      if (iconData) {
+        setFileIcons(prev => ({
+          ...prev,
+          [file.path]: iconData
+        }));
+      }
+    } catch (error) {
+      // 아이콘 로드 실패 시 무시
+    }
+  };
+
+  // 파일 썸네일 생성 함수 (시스템 아이콘 우선 사용)
+  // 1. fileIcons[file.path]에 base64 아이콘이 있으면 우선 표시
+  // 2. 없으면 electronAPI.getFileIcon으로 비동기 로드 시도
+  // 3. 그래도 없으면 확장자별 SVG fallback
+  const getFileThumbnail = (file) => {
+    // 시스템 아이콘이 있으면 사용
+    if (fileIcons[file.path]) {
+      return (
+        <div className="w-12 h-12 rounded-xl overflow-hidden bg-white dark:bg-gray-800 flex items-center justify-center p-1">
+          <img 
+            src={fileIcons[file.path]} 
+            alt={file.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+      );
+    }
+
+    // 시스템 아이콘이 없으면 비동기로 로드 시도
+    if (!file.isDirectory && electronAPI.isElectronApp()) {
+      setTimeout(() => loadSystemIcon(file), 10);
+    }
+
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+    const videoExts = ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'webm'];
+    const audioExts = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'wma'];
+    const codeExts = ['js', 'jsx', 'ts', 'tsx', 'py', 'java', 'cpp', 'c', 'html', 'css', 'php', 'rb', 'go', 'rs'];
+    const docExts = ['pdf', 'doc', 'docx', 'txt', 'rtf', 'odt'];
+    const archiveExts = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2'];
+    
+    if (imageExts.includes(ext)) {
+      return (
+        <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+          <img 
+            src={`file://${file.path}`} 
+            alt={file.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'flex';
+            }}
+          />
+          <div style={{display: 'none'}} className="w-full h-full bg-gradient-to-br from-pink-100 to-rose-200 dark:from-pink-900 dark:to-rose-800 flex items-center justify-center">
+            <PhotoIcon className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+          </div>
+        </div>
+      );
+    } 
+    
+    if (videoExts.includes(ext)) {
+      return (
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-violet-200 dark:from-purple-900 dark:to-violet-800 flex items-center justify-center relative group">
+          <VideoCameraIcon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+          <div className="absolute inset-0 bg-black/20 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="w-3 h-3 bg-white rounded-full flex items-center justify-center">
+              <div className="w-0 h-0 border-l-2 border-l-black border-y-1 border-y-transparent ml-0.5"></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    if (audioExts.includes(ext)) {
+      return (
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-100 to-emerald-200 dark:from-green-900 dark:to-emerald-800 flex items-center justify-center relative group">
+          <MusicalNoteIcon className="w-6 h-6 text-green-600 dark:text-green-400" />
+          <div className="absolute inset-0 bg-black/10 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex space-x-0.5">
+              <div className="w-0.5 h-2 bg-white rounded-full animate-pulse"></div>
+              <div className="w-0.5 h-3 bg-white rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
+              <div className="w-0.5 h-4 bg-white rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-0.5 h-3 bg-white rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+              <div className="w-0.5 h-2 bg-white rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    if (codeExts.includes(ext)) {
+      return (
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-100 to-red-200 dark:from-orange-900 dark:to-red-800 flex items-center justify-center relative group">
+          <CodeBracketIcon className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+          <div className="absolute top-1 right-1 text-[8px] font-bold text-orange-800 dark:text-orange-300 uppercase">
+            {ext}
+          </div>
+        </div>
+      );
+    }
+    
+    if (docExts.includes(ext)) {
+      return (
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-200 dark:from-blue-900 dark:to-indigo-800 flex items-center justify-center relative">
+          <DocumentTextIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          <div className="absolute inset-2 border border-blue-300 dark:border-blue-600 rounded opacity-30"></div>
+        </div>
+      );
+    }
+    
+    if (archiveExts.includes(ext)) {
+      return (
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-100 to-amber-200 dark:from-yellow-900 dark:to-amber-800 flex items-center justify-center relative">
+          <ArchiveBoxIcon className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+          <div className="absolute top-1 right-1 w-2 h-2 bg-yellow-800 dark:bg-yellow-300 rounded-full"></div>
+        </div>
+      );
+    }
+    
+    // 기본 아이콘 표시
+    const Icon = getFileIcon(file);
+    return (
+      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+        file.isDirectory 
+          ? 'bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800' 
+          : 'bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800'
+      }`}>
+        <Icon className={`w-6 h-6 ${
+          file.isDirectory ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'
+        }`} />
+      </div>
+    );
+  };
+
+  const formatFileSize = (bytes) => {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // 현재 폴더의 파일들을 기반으로 관련 필터들만 표시
+  const getRelevantFilters = () => {
+    const relevantFilters = [fileFilters[0]]; // 'all' 필터는 항상 포함
+    
+    fileFilters.slice(1).forEach(filter => {
+      // 해당 필터에 맞는 파일이 하나라도 있으면 필터를 표시
+      const hasMatchingFiles = files.some(file => filter.filter(file));
+      if (hasMatchingFiles) {
+        relevantFilters.push(filter);
+      }
+    });
+    
+    return relevantFilters;
+  };
+
+  const relevantFilters = getRelevantFilters();
+
+  // filteredFiles: OR 조건으로 여러 필터 중 하나라도 통과하면 표시
+  const filteredFiles = files.filter(file => {
+    const matchesSearch = file.name.toLowerCase().includes(searchQuery.toLowerCase());
+    if (activeFilters.includes('all')) return matchesSearch;
+    return activeFilters.some(filterId => {
+      const filter = fileFilters.find(f => f.id === filterId);
+      return filter ? filter.filter(file) : false;
+    });
+  });
+
+  // 1. 카테고리 → 확장자 매핑 테이블 추가
+  const categoryToExtensions = {
+    '이미지': ['jpg','jpeg','png','gif','bmp','svg','webp','tiff','ico','psd','ai','raw','cr2','nef','dng'],
+    '사진': ['jpg','jpeg','png','gif','bmp','webp','tiff','ico','raw'],
+    '문서': ['pdf','doc','docx','xls','xlsx','ppt','pptx','txt','rtf','odt','md','hwp'],
+    '동영상': ['mp4','avi','mov','mkv','wmv','flv','webm','m4v','3gp','ogv','mpg','mpeg'],
+    '음악': ['mp3','wav','flac','aac','ogg','wma','m4a','opus'],
+    '압축': ['zip','rar','7z','tar','gz','bz2','xz','iso'],
+    '코드': ['js','jsx','ts','tsx','py','java','cpp','c','html','css','php','rb','go','rs','swift','kt','scala','sh','bat','ps1','sql','json','xml','yaml','yml','toml','ini','cfg','conf'],
+    '실행파일': ['exe','msi','dmg','pkg','deb','rpm','app','apk','ipa','run','bin','com','scr','bat','cmd','ps1','vbs','jar','war'],
+    '폰트': ['ttf','otf','woff','woff2','eot','fon','pfb','pfm','afm'],
+    'CAD': ['dwg','dxf','dwf','skp','step','stp','iges','igs','catpart','catproduct','prt','asm','ipt','iam','sldprt','sldasm','slddrw','3dm','rvt','rfa','rte','rft','fcstd','3ds','obj','fbx','max','blend'],
+    '디자인': ['dwg','skp','3ds','max','blend','maya','c4d','fbx','obj','dae','stl','ply','x3d','fig','sketch','xd','indd','qxd','step','stp','iges','igs'],
+    '스케치업': ['skp'],
+    '스케치업파일': ['skp'],
+    'sketchup': ['skp'],
+    '3d': ['skp','stl','obj','fbx','3ds','max','blend','step','stp','iges','igs'],
+  };
+
+  // 2. 자연어 명령에서 확장자/필터 추출 함수 (개선된 버전)
+  function extractExtensionsFromQuery(query) {
+    let exts = [];
+    let isSpecificExtension = false;
+    
+    // 1. 직접 확장자 입력 확인 (가장 우선순위)
+    const extRegex = /\.([a-z0-9]{2,5})/gi;
+    let match;
+    while ((match = extRegex.exec(query)) !== null) {
+      exts.push(match[1].toLowerCase());
+      isSpecificExtension = true;
+    }
+    
+    // 2. 구체적인 파일 타입 키워드 확인
+    const specificFileTypes = {
+      'pdf': ['pdf'],
+      'PDF': ['pdf'],
+      '엑셀': ['xls', 'xlsx'],
+      '워드': ['doc', 'docx'],
+      '파워포인트': ['ppt', 'pptx'],
+      '텍스트': ['txt'],
+      '이미지': ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp', 'tiff', 'ico'],
+      '사진': ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'ico'],
+      '동영상': ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'webm', 'm4v', '3gp', 'ogv', 'mpg', 'mpeg'],
+      '음악': ['mp3', 'wav', 'flac', 'aac', 'ogg', 'wma', 'm4a', 'opus'],
+      '압축': ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'iso'],
+      '코드': ['js', 'jsx', 'ts', 'tsx', 'py', 'java', 'cpp', 'c', 'html', 'css', 'php', 'rb', 'go', 'rs', 'swift', 'kt', 'scala', 'sh', 'bat', 'ps1', 'sql', 'json', 'xml', 'yaml', 'yml', 'toml', 'ini', 'cfg', 'conf'],
+      '실행파일': ['exe', 'msi', 'dmg', 'pkg', 'deb', 'rpm', 'app', 'apk', 'ipa', 'run', 'bin', 'com', 'scr', 'bat', 'cmd', 'ps1', 'vbs', 'jar', 'war'],
+      '스케치업': ['skp'],
+      '스케치업파일': ['skp'],
+      'sketchup': ['skp'],
+      '3d': ['skp','stl','obj','fbx','3ds','max','blend','step','stp','iges','igs'],
+      'cad': ['dwg','dxf','dwf','skp','step','stp','iges','igs','catpart','catproduct','prt','asm','ipt','iam','sldprt','sldasm','slddrw','3dm','rvt','rfa','rte','rft','fcstd'],
+    };
+    
+    // 구체적인 파일 타입 키워드 검색
+    for (const [keyword, extList] of Object.entries(specificFileTypes)) {
+      if (query.includes(keyword)) {
+        exts = [...exts, ...extList];
+        isSpecificExtension = true;
+        break; // 첫 번째 매치에서 중단 (가장 구체적인 것만)
+      }
+    }
+    
+    // 3. 카테고리 키워드 확인 (구체적인 확장자가 없을 때만)
+    if (!isSpecificExtension) {
+      Object.entries(categoryToExtensions).forEach(([keyword, extList]) => {
+        if (query.includes(keyword)) {
+          exts = [...exts, ...extList];
+        }
+      });
+    }
+    
+    return [...new Set(exts)];
+  }
+
+  // 파일 타입 매칭 유틸리티 함수 추가
+  function getFileTypeInfo(fileName, userQuery) {
+    const ext = fileName.split('.').pop()?.toLowerCase() || '';
+    const query = userQuery.toLowerCase();
+    
+    // 구체적인 파일 타입 매칭
+    if (query.includes('pdf') && ext === 'pdf') {
+      return { type: 'PDF 파일', emoji: '📕', priority: 1 };
+    }
+    if ((query.includes('엑셀') || query.includes('xls') || query.includes('xlsx')) && ['xls', 'xlsx'].includes(ext)) {
+      return { type: '엑셀 파일', emoji: '📊', priority: 1 };
+    }
+    if ((query.includes('워드') || query.includes('doc') || query.includes('docx')) && ['doc', 'docx'].includes(ext)) {
+      return { type: '워드 파일', emoji: '📝', priority: 1 };
+    }
+    if ((query.includes('파워포인트') || query.includes('ppt') || query.includes('pptx')) && ['ppt', 'pptx'].includes(ext)) {
+      return { type: '파워포인트 파일', emoji: '📽️', priority: 1 };
+    }
+    if ((query.includes('텍스트') || query.includes('txt')) && ext === 'txt') {
+      return { type: '텍스트 파일', emoji: '📄', priority: 1 };
+    }
+    
+    // 카테고리별 매칭
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp', 'tiff', 'ico'];
+    if ((query.includes('이미지') || query.includes('사진') || query.includes('image') || query.includes('photo')) && imageExts.includes(ext)) {
+      return { type: '이미지 파일', emoji: '🖼️', priority: 2 };
+    }
+    
+    const videoExts = ['mp4', 'avi', 'mov', 'mkv', 'wmv', 'flv', 'webm', 'm4v', '3gp', 'ogv', 'mpg', 'mpeg'];
+    if ((query.includes('동영상') || query.includes('video')) && videoExts.includes(ext)) {
+      return { type: '동영상 파일', emoji: '🎬', priority: 2 };
+    }
+    
+    const audioExts = ['mp3', 'wav', 'flac', 'aac', 'ogg', 'wma', 'm4a', 'opus'];
+    if ((query.includes('음악') || query.includes('music')) && audioExts.includes(ext)) {
+      return { type: '음악 파일', emoji: '🎵', priority: 2 };
+    }
+    
+    const archiveExts = ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'iso'];
+    if (query.includes('압축') && archiveExts.includes(ext)) {
+      return { type: '압축 파일', emoji: '📦', priority: 2 };
+    }
+    
+    const codeExts = ['js', 'jsx', 'ts', 'tsx', 'py', 'java', 'cpp', 'c', 'html', 'css', 'php', 'rb', 'go', 'rs', 'swift', 'kt', 'scala', 'sh', 'bat', 'ps1', 'sql', 'json', 'xml', 'yaml', 'yml', 'toml', 'ini', 'cfg', 'conf'];
+    if (query.includes('코드') && codeExts.includes(ext)) {
+      return { type: '코드 파일', emoji: '💻', priority: 2 };
+    }
+    
+    const exeExts = ['exe', 'msi', 'dmg', 'pkg', 'deb', 'rpm', 'app', 'apk', 'ipa', 'run', 'bin', 'com', 'scr', 'bat', 'cmd', 'ps1', 'vbs', 'jar', 'war'];
+    if (query.includes('실행파일') && exeExts.includes(ext)) {
+      return { type: '실행 파일', emoji: '⚙️', priority: 2 };
+    }
+    
+    return { type: '파일', emoji: '📄', priority: 3 };
+  }
+
+  // 3. 자연어 명령에서 날짜/크기/기타 조건 추출 (간단 버전)
+  function extractAdvancedFilters(query) {
+    const filters = {};
+    // 날짜 조건
+    if (/오늘|최근|1일|하루/.test(query)) filters.days = 1;
+    else if (/3일/.test(query)) filters.days = 3;
+    else if (/7일|일주일/.test(query)) filters.days = 7;
+    else if (/한달|30일/.test(query)) filters.days = 30;
+    // 크기 조건
+    const sizeMatch = query.match(/([0-9]+) ?(MB|GB|KB)/i);
+    if (sizeMatch) {
+      const size = parseInt(sizeMatch[1], 10);
+      const unit = sizeMatch[2].toUpperCase();
+      let bytes = size;
+      if (unit === 'KB') bytes *= 1024;
+      if (unit === 'MB') bytes *= 1024*1024;
+      if (unit === 'GB') bytes *= 1024*1024*1024;
+      filters.minSize = bytes;
+    }
+    // 중복, 정렬 등 기타 키워드
+    if (/중복/.test(query)) filters.duplicate = true;
+    if (/정렬/.test(query)) filters.sort = true;
+    return filters;
+  }
+
+  // 추천 질문 자동 생성 (aiSuggestions)
+  useEffect(() => {
+    // 최근 폴더/파일/명령 맥락 기반 추천 질문 예시
+    setAiSuggestions([
+      '최근 이미지 파일 찾아줘',
+      '문서 파일만 정리해줘',
+      '10MB 이상 동영상만 보여줘',
+      '중복 파일 찾아줘',
+      '최근 수정된 코드 파일만 보여줘',
+      '압축파일만 찾아서 압축 풀어줘',
+      '이 폴더에서 3일 이내 생성된 파일만 보여줘',
+      '음악 파일만 크기순으로 정렬해줘',
+      'AI로 파일 자동 분류해줘'
+    ]);
+  }, [currentPath, files]);
+
+  // 필터 버튼 클릭 핸들러
+  const handleFilterClick = (filterId) => {
+    if (filterId === 'all') {
+      setActiveFilters(['all']);
+    } else {
+      setActiveFilters(prev => {
+        const next = prev.includes(filterId)
+          ? prev.filter(id => id !== filterId)
+          : [...prev.filter(id => id !== 'all'), filterId];
+        return next.length === 0 ? ['all'] : next;
+      });
+    }
+  };
+
+  return (
+    <div className={`h-screen ${darkMode ? 'dark' : ''} transition-all duration-300 flex flex-col`}>
+      <style>{hideScrollbarStyle}</style>
+      <div className="flex-1 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex font-inter overflow-hidden">
+        
+        {/* --- 메뉴바 (맨 좌측) --- */}
+        {showMenuBar && (
+          <aside className="fixed left-0 top-0 bottom-0 w-16 bg-gray-900/95 dark:bg-gray-950/95 backdrop-blur-xl border-r border-gray-700/50 flex flex-col items-center py-4 space-y-3 shadow-2xl z-50">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleMenuClick(item.id)}
+                className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 group ${
+                  selectedMenuItem === item.id 
+                    ? 'bg-blue-600/80 shadow-lg' 
+                    : 'bg-gray-800/50 hover:bg-gray-700/70'
+                }`}
+                title={item.label}
+              >
+                <item.icon className={`w-5 h-5 ${
+                  selectedMenuItem === item.id ? 'text-white' : item.color
+                } group-hover:scale-110 transition-transform`} />
+              </button>
+            ))}
+            
+            {/* 구분선 */}
+            <div className="w-8 h-px bg-gray-700/50 my-2"></div>
+            
+            {/* 유저 리스트 토글 */}
+            <button
+              onClick={() => setShowUserList(!showUserList)}
+              className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:scale-110 ${
+                showUserList ? 'bg-blue-600/80 hover:bg-blue-500/80' : 'bg-gray-800/50 hover:bg-gray-700/70'
+              }`}
+              title="팀원 목록"
+            >
+              <UserGroupIcon className={`w-5 h-5 ${showUserList ? 'text-white' : 'text-gray-400'} transition-colors`} />
+            </button>
+          </aside>
+        )}
+
+        {/* --- 유저 리스트 (Teams 스타일) --- */}
+        {showUserList && (
+          <aside className={`fixed top-0 bottom-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 shadow-xl z-40 transition-all duration-300 ${
+            showMenuBar ? 'left-16' : 'left-0'
+          } ${userListCollapsed ? 'w-16' : 'w-72'}`}>
+            
+            {/* 헤더 */}
+            <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between">
+              {!userListCollapsed && (
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                  <UserGroupIcon className="w-5 h-5 mr-2 text-blue-500" />
+                  팀원 ({onlineUsers.filter(u => u.status === 'online' || u.status === 'busy').length}명 활성)
+                </h3>
+              )}
+              <button
+                onClick={() => setUserListCollapsed(!userListCollapsed)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                title={userListCollapsed ? '펼치기' : '접기'}
+              >
+                {userListCollapsed ? (
+                  <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            
+            {/* 유저 목록 */}
+            <div className="overflow-y-auto flex-1">
+              {userListCollapsed ? (
+                // 접힌 상태: 아바타만 표시
+                <div className="p-2 space-y-2">
+                  {onlineUsers.map((user) => (
+                    <div key={user.id} className="relative group">
+                      <button
+                        className="w-12 h-12 rounded-full bg-gradient-to-br text-white font-bold text-sm flex items-center justify-center hover:scale-105 transition-all shadow-lg"
+                        style={{backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))`}}
+                        title={`${user.name} - ${user.title}`}
+                        onClick={(e) => handleUserProfileClick(user, e)}
+                      >
+                        <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${user.avatarColor} flex items-center justify-center text-white font-bold text-sm`}>
+                          {user.avatar}
+                        </div>
+                      </button>
+                      
+                      {/* 상태 표시 */}
+                      <div className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white dark:border-gray-900 ${
+                        user.status === 'online' ? 'bg-green-500' : 
+                        user.status === 'busy' ? 'bg-red-500' :
+                        user.status === 'away' ? 'bg-yellow-500' : 'bg-gray-500'
+                      }`}></div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                // 펼친 상태: 전체 정보 표시
+                <div className="p-4 space-y-1">
+                  {onlineUsers.map((user) => (
+                    <div 
+                      key={user.id} 
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group cursor-pointer"
+                      onClick={(e) => handleUserProfileClick(user, e)}
+                    >
+                      <div className="relative">
+                        <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${user.avatarColor} flex items-center justify-center text-white font-bold text-sm shadow-lg`}>
+                          {user.avatar}
+                        </div>
+                        <div className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white dark:border-gray-900 ${
+                          user.status === 'online' ? 'bg-green-500' : 
+                          user.status === 'busy' ? 'bg-red-500' :
+                          user.status === 'away' ? 'bg-yellow-500' : 'bg-gray-500'
+                        }`}></div>
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-gray-900 dark:text-gray-100 truncate text-sm">
+                          {user.name}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400 truncate">
+                          {user.title}
+                        </div>
+                        {user.currentActivity && user.status !== 'offline' && (
+                          <div className="text-xs text-blue-600 dark:text-blue-400 truncate flex items-center">
+                            📄 {user.currentActivity.file}
+                          </div>
+                        )}
+                        <div className={`text-xs flex items-center ${
+                          user.status === 'online' ? 'text-green-600 dark:text-green-400' : 
+                          user.status === 'busy' ? 'text-red-600 dark:text-red-400' :
+                          user.status === 'away' ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-500'
+                        }`}>
+                          <div className={`w-2 h-2 rounded-full mr-1 ${
+                            user.status === 'online' ? 'bg-green-500' : 
+                            user.status === 'busy' ? 'bg-red-500' :
+                            user.status === 'away' ? 'bg-yellow-500' : 'bg-gray-500'
+                          }`}></div>
+                          {user.status === 'online' ? '사용 가능' : 
+                           user.status === 'busy' ? '다른 용무 중' :
+                           user.status === 'away' ? '자리 비움' : 
+                           user.lastSeen ? `${user.lastSeen} 마지막 접속` : '오프라인'}
+                        </div>
+                      </div>
+                      
+                      {(user.status === 'online' || user.status === 'busy' || user.status === 'away') && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setMessengerExpanded(true);
+                          }}
+                          className="opacity-0 group-hover:opacity-100 w-8 h-8 rounded-lg bg-blue-500 hover:bg-blue-600 flex items-center justify-center transition-all"
+                          title="메시지 보내기"
+                        >
+                          <ChatBubbleLeftRightIcon className="w-4 h-4 text-white" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </aside>
+        )}
+
+        
+        {/* --- 메인 콘텐츠 영역 (동적 패딩) --- */}
+        <div className={`flex-1 flex flex-col transition-all duration-300 ${
+          showMenuBar ? 
+            (showUserList ? (userListCollapsed ? 'ml-32' : 'ml-88') : 'ml-16') : 
+            (showUserList ? (userListCollapsed ? 'ml-16' : 'ml-72') : 'ml-0')
+        }`}>
+        
+        {/* Filo 헤더 */}
+        <header className="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              {/* 좌측: Filo 브랜딩 */}
+              <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                    <SparklesSolidIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      Filo
+                    </h1>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">AI 파일 매니저</p>
+                  </div>
+                </div>
+
+                <div className="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
+
+                <button
+                  onClick={() => setShowSidebar(!showSidebar)}
+                  className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <ViewColumnsIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </button>
+                
+                {/* 브레드크럼 */}
+                <nav className="flex items-center space-x-2">
+                  <HomeIcon className="w-4 h-4 text-gray-400" />
+                  {breadcrumbs.map((crumb, index) => (
+                    <React.Fragment key={index}>
+                      <span className="text-gray-400">/</span>
+                      <button
+                        onClick={() => handleBreadcrumbClick(crumb.path)}
+                        className="px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors"
+                      >
+                        {crumb.name}
+                      </button>
+                    </React.Fragment>
+                  ))}
+                </nav>
+              </div>
+
+              {/* 우측: 도구들 */}
+              <div className="flex items-center space-x-4">
+                {/* 고급 검색 */}
+                <div className="relative">
+                  <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="AI 검색으로 찾기..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 pr-6 py-3 w-80 bg-white/70 dark:bg-gray-800/70 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 transition-all"
+                  />
+                </div>
+
+                {/* 뷰 모드 선택 */}
+                <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded-lg transition-all ${
+                      viewMode === 'grid' 
+                        ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' 
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    }`}
+                    title="그리드 뷰"
+                  >
+                    <Squares2X2Icon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded-lg transition-all ${
+                      viewMode === 'list' 
+                        ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' 
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    }`}
+                    title="리스트 뷰"
+                  >
+                    <ListBulletIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('compact')}
+                    className={`p-2 rounded-lg transition-all ${
+                      viewMode === 'compact' 
+                        ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' 
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    }`}
+                    title="콤팩트 뷰"
+                  >
+                    <Bars3BottomLeftIcon className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* 다크모드 토글 */}
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className="p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all"
+                >
+                  {darkMode ? 
+                    <SunIcon className="w-5 h-5 text-amber-500" /> : 
+                    <MoonIcon className="w-5 h-5 text-gray-600" />
+                  }
+                </button>
+
+                {/* 메신저 토글 */}
+                <button
+                  onClick={() => setMessengerExpanded(!messengerExpanded)}
+                  className="relative p-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg"
+                >
+                  <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                  {messages.length > 0 && (
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                  )}
+                </button>
+
+                {/* AI 채팅 토글 */}
+                <button
+                  onClick={() => setAiChatExpanded(!aiChatExpanded)}
+                  className="relative p-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg"
+                >
+                  <SparklesIcon className="w-5 h-5" />
+                  {chatHistory.length > 0 && (
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="flex flex-1 h-full">
+          {/* 개선된 사이드바 */}
+          {showSidebar && (
+            <aside className="w-80 bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 flex flex-col overflow-y-auto hide-scrollbar">
+              
+
+              {/* 이 PC */}
+              <div className="px-6 pb-4">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                  <ComputerDesktopIcon className="w-4 h-4 mr-2 text-blue-500" />
+                  이 PC
+                </h3>
+                <div className="space-y-2">
+                  {/* 드라이브들 */}
+                  {drives.map((drive) => (
+                    <button
+                      key={drive.name}
+                      onClick={() => handleDriveClick(drive)}
+                      className={`w-full flex items-center space-x-3 p-3 rounded-xl text-left transition-all hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                        currentPath === drive.name ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                      }`}
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+                        <ComputerDesktopIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-gray-900 dark:text-gray-100">
+                          로컬 디스크 ({drive.name})
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          여유 공간: {formatFileSize(drive.freeSpace)}
+                        </div>
+                        <div className="mt-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                          <div 
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 h-1.5 rounded-full" 
+                            style={{ width: `${drive.size > 0 ? ((drive.size - drive.freeSpace) / drive.size) * 100 : 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 즐겨찾기 */}
+              <div className="px-6 pb-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                    <HeartSolidIcon className="w-4 h-4 mr-2 text-red-500" />
+                    즐겨찾기
+                    {favorites.length > 0 && (
+                      <span className="ml-2 text-xs bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full">
+                        {favorites.length}
+                      </span>
+                    )}
+                  </h3>
+                  {favorites.length >= 10 && (
+                    <button
+                      onClick={() => setFavoritesCollapsed(!favoritesCollapsed)}
+                      className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      title={favoritesCollapsed ? "펼치기" : "접기"}
+                    >
+                      {favoritesCollapsed ? (
+                        <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+                      ) : (
+                        <ChevronUpIcon className="w-4 h-4 text-gray-500" />
+                      )}
+                    </button>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  {favorites.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
+                      즐겨찾기한 폴더가 없습니다.
+                      <br />
+                      폴더 옆의 ⭐를 클릭해보세요!
+                    </div>
+                  ) : (
+                    <>
+                      {(favoritesCollapsed ? favorites.slice(0, 5) : favorites).map((folder) => (
+                        <button
+                          key={folder.id}
+                          onClick={() => handleQuickAccessClick(folder)}
+                          className={`w-full flex items-center space-x-3 p-2 rounded-xl text-left transition-all hover:bg-yellow-50 dark:hover:bg-yellow-900/20 group ${
+                            currentPath === folder.path ? 'bg-yellow-50 dark:bg-yellow-900/20' : ''
+                          }`}
+                        >
+                          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${folder.gradient} flex items-center justify-center`}>
+                            <folder.icon className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="font-medium text-gray-900 dark:text-gray-100 text-sm flex-1">{folder.label}</span>
+                          {folder.type !== 'default' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleFavorite({ path: folder.path });
+                              }}
+                              className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded transition-all"
+                              title="즐겨찾기에서 제거"
+                            >
+                              <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          )}
+                        </button>
+                      ))}
+                      {favoritesCollapsed && favorites.length > 5 && (
+                        <button
+                          onClick={() => setFavoritesCollapsed(false)}
+                          className="w-full text-center py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                        >
+                          ...그리고 {favorites.length - 5}개 더
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* AI 기능 메뉴 */}
+              <div className="px-6 pb-6">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                  <SparklesIcon className="w-4 h-4 mr-2 text-purple-500" />
+                  AI 기능
+                </h3>
+                <div className="space-y-2">
+                  {aiFeatures.map((feature) => (
+                    <button
+                      key={feature.id}
+                      className="w-full flex items-center space-x-4 p-3 rounded-xl text-left hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 transition-all group"
+                    >
+                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${feature.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                        <feature.icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                          {feature.label}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          {feature.description}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 프로페셔널 도구 */}
+              <div className="px-6 pb-6">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                  <Cog6ToothIcon className="w-4 h-4 mr-2 text-gray-500" />
+                  도구
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {professionalTools.map((tool) => (
+                    <button
+                      key={tool.id}
+                      className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all group"
+                    >
+                      <tool.icon className={`w-5 h-5 ${tool.color} mx-auto mb-1 group-hover:scale-110 transition-transform`} />
+                      <div className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center">
+                        {tool.label}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          )}
+
+          {/* 메인 콘텐츠 영역 */}
+          <main className="flex-1 flex flex-col h-full">
+            
+            {/* 파일 목록 컨테이너 */}
+            <div className="flex-1 flex flex-col h-full">
+              {/* 파일 필터 단일 행 */}
+              <div className="px-6 py-3 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center space-x-3">
+                  <FunnelIcon className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">필터:</span>
+                  <div className="flex space-x-2">
+                    {relevantFilters.map((filter) => (
+                      <button
+                        key={filter.id}
+                        onClick={() => handleFilterClick(filter.id)}
+                        className={`flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
+                          activeFilters.includes(filter.id)
+                            ? 'bg-blue-500 text-white shadow-md'
+                            : 'bg-white/60 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-gray-200/50 dark:border-gray-700/50'
+                        }`}
+                      >
+                        <filter.icon className="w-3 h-3" />
+                        <span>{filter.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* 메인 콘텐츠 영역 - 스크롤 가능 (스크롤바 숨김), 하단 여백 추가 */}
+              <div 
+                className={`flex-1 p-6 overflow-y-auto hide-scrollbar ${
+                  dragOver ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-dashed border-blue-400' : ''
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+              {loading ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <div className="relative">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600"></div>
+                    <SparklesIcon className="w-6 h-6 text-blue-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                  </div>
+                  <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">AI가 파일을 분석하고 있습니다...</p>
+                </div>
+              ) : activeFilters.includes('group') ? (
+                // 그룹 뷰: 확장자별로 섹션 나누어서 표시
+                <div className="space-y-8">
+                  {(() => {
+                    // 파일들을 확장자별로 그룹화
+                    const groups = {};
+                    const folders = [];
+                    
+                    filteredFiles.forEach(file => {
+                      if (file.isDirectory) {
+                        folders.push(file);
+                      } else {
+                        const ext = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : 'no-extension';
+                        if (!groups[ext]) groups[ext] = [];
+                        groups[ext].push(file);
+                      }
+                    });
+                    
+                    return (
+                      <>
+                        {/* 폴더 섹션 */}
+                        {folders.length > 0 && (
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                              <FolderIcon className="w-5 h-5 mr-2 text-amber-500" />
+                              폴더 ({folders.length}개)
+                            </h3>
+                            <div className={viewMode === 'grid' 
+                              ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-4' 
+                              : viewMode === 'compact'
+                              ? 'space-y-1'
+                              : 'space-y-2'
+                            }>
+                              {folders.map((file) => {
+                                const isSelected = selectedFiles.some(f => f.path === file.path);
+                                return viewMode === 'grid' ? (
+                                  <div
+                                    key={file.path}
+                                    className={`group relative p-4 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 ${
+                                      isSelected 
+                                        ? 'bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-500 shadow-lg' 
+                                        : 'bg-white/60 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600'
+                                    } backdrop-blur-sm`}
+                                    onClick={(e) => handleFileSelect(file, e)}
+                                    onDoubleClick={() => handleFileDoubleClick(file)}
+                                    onContextMenu={(e) => handleContextMenu(e, file)}
+                                  >
+                                    <div className="flex flex-col items-center text-center">
+                                      <div className="mb-3 transition-all group-hover:scale-110">
+                                        {getFileThumbnail(file)}
+                                      </div>
+                                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate w-full mb-1">
+                                        {file.name}
+                                      </div>
+                                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                                        {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                                      </div>
+                                    </div>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleFavorite(file);
+                                      }}
+                                      className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                                        isFavorite(file.path) 
+                                          ? 'bg-yellow-500 text-white shadow-lg' 
+                                          : 'bg-white/80 dark:bg-gray-800/80 text-gray-400 hover:text-yellow-500 opacity-0 group-hover:opacity-100'
+                                      }`}
+                                    >
+                                      {isFavorite(file.path) ? (
+                                        <HeartSolidIcon className="w-4 h-4" />
+                                      ) : (
+                                        <StarIcon className="w-4 h-4" />
+                                      )}
+                                    </button>
+                                  </div>
+                                ) : viewMode === 'compact' ? (
+                                  // 컴팩트 뷰 - 그룹 섹션
+                                  <div
+                                    key={file.path}
+                                    className={`group flex items-center space-x-2 px-3 py-1 rounded-lg cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                                      isSelected 
+                                        ? 'bg-blue-50 dark:bg-blue-900/30 border-l-2 border-blue-500' 
+                                        : 'hover:border-l-2 hover:border-gray-300 dark:hover:border-gray-600'
+                                    }`}
+                                    onClick={(e) => handleFileSelect(file, e)}
+                                    onDoubleClick={() => handleFileDoubleClick(file)}
+                                    onContextMenu={(e) => handleContextMenu(e, file)}
+                                  >
+                                    <div className="flex-shrink-0 w-4 h-4">
+                                      {React.createElement(getFileIcon(file), { className: "w-4 h-4 text-gray-600 dark:text-gray-400" })}
+                                    </div>
+                                    <div className="flex-1 min-w-0 text-sm">
+                                      <span className="font-medium text-gray-900 dark:text-gray-100 truncate block">
+                                        {file.name}
+                                      </span>
+                                    </div>
+                                    <div className="flex-shrink-0 text-xs text-gray-500 dark:text-gray-400 w-20 text-right">
+                                      {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                                    </div>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleFavorite(file);
+                                      }}
+                                      className={`flex-shrink-0 w-4 h-4 rounded-sm flex items-center justify-center transition-all ${
+                                        isFavorite(file.path) 
+                                          ? 'text-yellow-500' 
+                                          : 'text-gray-300 hover:text-yellow-500 opacity-0 group-hover:opacity-100'
+                                      }`}
+                                    >
+                                      {isFavorite(file.path) ? (
+                                        <HeartSolidIcon className="w-3 h-3" />
+                                      ) : (
+                                        <StarIcon className="w-3 h-3" />
+                                      )}
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div key={file.path} className="flex items-center space-x-4 p-3 rounded-2xl">
+                                    <div className="flex-shrink-0">
+                                      {getFileThumbnail(file)}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                        {file.name}
+                                      </div>
+                                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                                        {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* 확장자별 섹션 */}
+                        {Object.entries(groups).map(([ext, files]) => (
+                          <div key={ext}>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+                              <DocumentIcon className="w-5 h-5 mr-2 text-blue-500" />
+                              {ext === 'no-extension' ? '확장자 없음' : `.${ext.toUpperCase()}`} ({files.length}개)
+                            </h3>
+                            <div className={viewMode === 'grid' 
+                              ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-4' 
+                              : viewMode === 'compact'
+                              ? 'space-y-1'
+                              : 'space-y-2'
+                            }>
+                              {files.map((file) => {
+                                const isSelected = selectedFiles.some(f => f.path === file.path);
+                                return viewMode === 'grid' ? (
+                                  <div
+                                    key={file.path}
+                                    className={`group relative p-4 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 ${
+                                      isSelected 
+                                        ? 'bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-500 shadow-lg' 
+                                        : 'bg-white/60 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600'
+                                    } backdrop-blur-sm`}
+                                    onClick={(e) => handleFileSelect(file, e)}
+                                    onDoubleClick={() => handleFileDoubleClick(file)}
+                                    onContextMenu={(e) => handleContextMenu(e, file)}
+                                  >
+                                    <div className="flex flex-col items-center text-center">
+                                      <div className="mb-3 transition-all group-hover:scale-110">
+                                        {getFileThumbnail(file)}
+                                      </div>
+                                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate w-full mb-1">
+                                        {file.name}
+                                      </div>
+                                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                                        {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                                      </div>
+                                    </div>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleFavorite(file);
+                                      }}
+                                      className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                                        isFavorite(file.path) 
+                                          ? 'bg-yellow-500 text-white shadow-lg' 
+                                          : 'bg-white/80 dark:bg-gray-800/80 text-gray-400 hover:text-yellow-500 opacity-0 group-hover:opacity-100'
+                                      }`}
+                                    >
+                                      {isFavorite(file.path) ? (
+                                        <HeartSolidIcon className="w-4 h-4" />
+                                      ) : (
+                                        <StarIcon className="w-4 h-4" />
+                                      )}
+                                    </button>
+                                  </div>
+                                ) : viewMode === 'compact' ? (
+                                  // 컴팩트 뷰 - 그룹 섹션
+                                  <div
+                                    key={file.path}
+                                    className={`group flex items-center space-x-2 px-3 py-1 rounded-lg cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                                      isSelected 
+                                        ? 'bg-blue-50 dark:bg-blue-900/30 border-l-2 border-blue-500' 
+                                        : 'hover:border-l-2 hover:border-gray-300 dark:hover:border-gray-600'
+                                    }`}
+                                    onClick={(e) => handleFileSelect(file, e)}
+                                    onDoubleClick={() => handleFileDoubleClick(file)}
+                                    onContextMenu={(e) => handleContextMenu(e, file)}
+                                  >
+                                    <div className="flex-shrink-0 w-4 h-4">
+                                      {React.createElement(getFileIcon(file), { className: "w-4 h-4 text-gray-600 dark:text-gray-400" })}
+                                    </div>
+                                    <div className="flex-1 min-w-0 text-sm">
+                                      <span className="font-medium text-gray-900 dark:text-gray-100 truncate block">
+                                        {file.name}
+                                      </span>
+                                    </div>
+                                    <div className="flex-shrink-0 text-xs text-gray-500 dark:text-gray-400 w-20 text-right">
+                                      {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                                    </div>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleFavorite(file);
+                                      }}
+                                      className={`flex-shrink-0 w-4 h-4 rounded-sm flex items-center justify-center transition-all ${
+                                        isFavorite(file.path) 
+                                          ? 'text-yellow-500' 
+                                          : 'text-gray-300 hover:text-yellow-500 opacity-0 group-hover:opacity-100'
+                                      }`}
+                                    >
+                                      {isFavorite(file.path) ? (
+                                        <HeartSolidIcon className="w-3 h-3" />
+                                      ) : (
+                                        <StarIcon className="w-3 h-3" />
+                                      )}
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div key={file.path} className="flex items-center space-x-4 p-3 rounded-2xl">
+                                    <div className="flex-shrink-0">
+                                      {getFileThumbnail(file)}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                        {file.name}
+                                      </div>
+                                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                                        {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    );
+                  })()}
+                </div>
+              ) : (
+                <div className={
+                  viewMode === 'grid' 
+                    ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-4' 
+                    : viewMode === 'compact'
+                    ? 'space-y-1'
+                    : 'space-y-2'
+                }>
+                  {filteredFiles.map((file) => {
+                    const isSelected = selectedFiles.some(f => f.path === file.path);
+                    
+                    return viewMode === 'grid' ? (
+                      <div
+                        key={file.path}
+                        className={`group relative p-4 rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 ${
+                          isSelected 
+                            ? 'bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-500 shadow-lg' 
+                            : 'bg-white/60 dark:bg-gray-800/60 border border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600'
+                        } backdrop-blur-sm`}
+                        onClick={(e) => handleFileSelect(file, e)}
+                        onDoubleClick={() => handleFileDoubleClick(file)}
+                        onContextMenu={(e) => handleContextMenu(e, file)}
+                      >
+                        <div className="flex flex-col items-center text-center">
+                          <div className="mb-3 transition-all group-hover:scale-110">
+                            {getFileThumbnail(file)}
+                          </div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate w-full mb-1">
+                            {file.name}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                          </div>
+                        </div>
+                        
+                        {/* 즐겨찾기 별표 */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(file);
+                          }}
+                          className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                            isFavorite(file.path) 
+                              ? 'bg-yellow-500 text-white shadow-lg' 
+                              : 'bg-white/80 dark:bg-gray-800/80 text-gray-400 hover:text-yellow-500 opacity-0 group-hover:opacity-100'
+                          }`}
+                          title={isFavorite(file.path) ? '즐겨찾기에서 제거' : '즐겨찾기에 추가'}
+                        >
+                          {isFavorite(file.path) ? (
+                            <HeartSolidIcon className="w-4 h-4" />
+                          ) : (
+                            <StarIcon className="w-4 h-4" />
+                          )}
+                        </button>
+                        
+                        {isSelected && (
+                          <div className="absolute top-2 left-2 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    ) : viewMode === 'compact' ? (
+                      // 컴팩트 뷰: 더 얇고 더 많이 보이게
+                      <div
+                        key={file.path}
+                        className={`group flex items-center space-x-2 px-3 py-1 rounded-lg cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                          isSelected 
+                            ? 'bg-blue-50 dark:bg-blue-900/30 border-l-2 border-blue-500' 
+                            : 'hover:border-l-2 hover:border-gray-300 dark:hover:border-gray-600'
+                        }`}
+                        onClick={(e) => handleFileSelect(file, e)}
+                        onDoubleClick={() => handleFileDoubleClick(file)}
+                        onContextMenu={(e) => handleContextMenu(e, file)}
+                      >
+                        <div className="flex-shrink-0 w-4 h-4">
+                          {React.createElement(getFileIcon(file), { className: "w-4 h-4 text-gray-600 dark:text-gray-400" })}
+                        </div>
+                        <div className="flex-1 min-w-0 text-sm">
+                          <span className="font-medium text-gray-900 dark:text-gray-100 truncate block">
+                            {file.name}
+                          </span>
+                        </div>
+                        <div className="flex-shrink-0 text-xs text-gray-500 dark:text-gray-400 w-20 text-right">
+                          {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                        </div>
+                        
+                        {/* 즐겨찾기 별표 - 컴팩트 */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(file);
+                          }}
+                          className={`flex-shrink-0 w-4 h-4 rounded-sm flex items-center justify-center transition-all ${
+                            isFavorite(file.path) 
+                              ? 'text-yellow-500' 
+                              : 'text-gray-300 hover:text-yellow-500 opacity-0 group-hover:opacity-100'
+                          }`}
+                        >
+                          {isFavorite(file.path) ? (
+                            <HeartSolidIcon className="w-3 h-3" />
+                          ) : (
+                            <StarIcon className="w-3 h-3" />
+                          )}
+                        </button>
+                        
+                        {isSelected && (
+                          <div className="flex-shrink-0 w-3 h-3 bg-blue-500 rounded-sm flex items-center justify-center">
+                            <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div
+                        key={file.path}
+                        className={`group flex items-center space-x-4 p-4 rounded-2xl cursor-pointer transition-all ${
+                          isSelected 
+                            ? 'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700' 
+                            : 'bg-white/60 dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+                        } backdrop-blur-sm`}
+                        onClick={(e) => handleFileSelect(file, e)}
+                        onDoubleClick={() => handleFileDoubleClick(file)}
+                        onContextMenu={(e) => handleContextMenu(e, file)}
+                      >
+                        {getFileThumbnail(file)}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 dark:text-gray-100 truncate">
+                            {file.name}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {formatDate(file.modified)}
+                          </div>
+                        </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                          {file.isDirectory ? '폴더' : formatFileSize(file.size)}
+                        </div>
+                        
+                        {/* 즐겨찾기 별표 */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(file);
+                          }}
+                          className={`w-6 h-6 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
+                            isFavorite(file.path) 
+                              ? 'bg-yellow-500 text-white shadow-lg' 
+                              : 'text-gray-400 hover:text-yellow-500 opacity-0 group-hover:opacity-100'
+                          }`}
+                          title={isFavorite(file.path) ? '즐겨찾기에서 제거' : '즐겨찾기에 추가'}
+                        >
+                          {isFavorite(file.path) ? (
+                            <HeartSolidIcon className="w-4 h-4" />
+                          ) : (
+                            <StarIcon className="w-4 h-4" />
+                          )}
+                        </button>
+                        
+                        {isSelected && (
+                          <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* 프리미엄 상태바 */}
+              </div>
+            </main>
+
+          {/* 개선된 미리보기 패널 */}
+          {preview && (
+            <aside className="w-96 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-l border-gray-200/50 dark:border-gray-700/50 flex flex-col">
+              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                    <EyeIcon className="w-5 h-5 mr-2 text-blue-500" />
+                    미리보기
+                  </h3>
+                  <button
+                    onClick={() => setPreview(null)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
+              <div className="flex-1 p-6 overflow-auto">
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center">
+                      {React.createElement(getFileIcon(preview), { className: "w-8 h-8 text-blue-600 dark:text-blue-400" })}
+                    </div>
+                    <h4 className="font-bold text-gray-900 dark:text-gray-100 text-lg mb-2">{preview.name}</h4>
+                  </div>
+                  
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">크기</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{formatFileSize(preview.size)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">수정일</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{formatDate(preview.modified)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">형식</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">
+                        {preview.name.split('.').pop()?.toUpperCase() || '폴더'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* 향상된 미리보기 콘텐츠 */}
+                  {preview.content && preview.type !== 'error' && (
+                    <div>
+                      <h5 className="font-bold text-gray-900 dark:text-gray-100 mb-3">내용 미리보기</h5>
+                      <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
+                        {preview.type === 'image' ? (
+                          <div className="p-4">
+                            <img 
+                              src={`file://${preview.fullPath}`} 
+                              alt={preview.name}
+                              className="w-full h-auto max-h-64 object-contain rounded-xl"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'block';
+                              }}
+                            />
+                            <div style={{display: 'none'}} className="text-gray-500 text-center py-8">
+                              이미지를 불러올 수 없습니다.
+                            </div>
+                          </div>
+                        ) : preview.type === 'video' ? (
+                          <div className="p-4">
+                            <video 
+                              controls 
+                              className="w-full h-auto max-h-64 rounded-xl"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'block';
+                              }}
+                            >
+                              <source src={`file://${preview.fullPath}`} />
+                              비디오를 지원하지 않는 브라우저입니다.
+                            </video>
+                            <div style={{display: 'none'}} className="text-gray-500 text-center py-8">
+                              동영상을 불러올 수 없습니다.
+                            </div>
+                          </div>
+                        ) : preview.type === 'audio' ? (
+                          <div className="p-4">
+                            <audio 
+                              controls 
+                              className="w-full"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'block';
+                              }}
+                            >
+                              <source src={`file://${preview.fullPath}`} />
+                              오디오를 지원하지 않는 브라우저입니다.
+                            </audio>
+                            <div style={{display: 'none'}} className="text-gray-500 text-center py-8">
+                              오디오를 불러올 수 없습니다.
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="p-4 text-sm font-mono max-h-64 overflow-auto text-gray-700 dark:text-gray-300">
+                            {preview.content}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      onClick={() => handleContextMenuAction('share')}
+                      className="px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 font-medium transition-all shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                    >
+                      <PaperAirplaneIcon className="w-4 h-4" />
+                      <span>공유</span>
+                    </button>
+                    <button className="px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 font-medium transition-all shadow-lg hover:shadow-xl">
+                      AI 분석
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          )}
+        </div>
+
+        {/* 우측 컨텍스트 메뉴 - AI 분석 및 액션 */}
+        {contextMenu.show && (
+          <div
+            className="fixed z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 rounded-3xl shadow-2xl py-4 min-w-[300px]"
+            style={{ left: contextMenu.x, top: contextMenu.y }}
+          >
+            {/* 파일 정보 헤더 */}
+            <div className="px-6 pb-4 border-b border-gray-200/50 dark:border-gray-700/50">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                  {getFileIcon(contextMenu.target)}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 dark:text-gray-100 truncate">{contextMenu.target?.name}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {contextMenu.target?.isDirectory ? '폴더' : formatFileSize(contextMenu.target?.size)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 분석 섹션 */}
+            <div className="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50">
+              <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center">
+                <SparklesIcon className="w-4 h-4 mr-2 text-purple-500" />
+                AI 분석
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => handleContextMenuAction('ai-summary')}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors text-left"
+                >
+                  <DocumentTextIcon className="w-4 h-4 text-purple-500" />
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">요약</span>
+                </button>
+                <button
+                  onClick={() => handleContextMenuAction('ai-analysis')}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors text-left"
+                >
+                  <BeakerIcon className="w-4 h-4 text-purple-500" />
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">분석</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 기본 액션 */}
+            <div className="px-6 py-2">
+              {[
+                { action: 'preview', icon: EyeIcon, label: '미리보기', color: 'text-blue-500' },
+                { action: 'edit', icon: PencilIcon, label: '편집', color: 'text-green-500' },
+                { action: 'share', icon: PaperAirplaneIcon, label: '메신저로 공유', color: 'text-emerald-500' },
+                { action: 'copy', icon: DocumentDuplicateIcon, label: '복사', color: 'text-orange-500' },
+                { action: 'delete', icon: TrashIcon, label: '삭제', color: 'text-red-500' }
+              ].map(({ action, icon: Icon, label, color }) => (
+                <button 
+                  key={action}
+                  className="w-full px-3 py-2.5 text-left hover:bg-gray-50 dark:hover:bg-gray-800 text-sm flex items-center space-x-3 transition-colors rounded-lg"
+                  onClick={() => handleContextMenuAction(action)}
+                >
+                  <Icon className={`w-4 h-4 ${color}`} />
+                  <span className="font-medium text-gray-700 dark:text-gray-300">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 사내 메신저 패널 */}
+        {messengerExpanded && (
+          <div className="fixed bottom-6 left-6 w-96 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-green-600 to-emerald-600">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
+                    <ChatSolidIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white">팀 메신저</h3>
+                    <p className="text-xs text-white/80">{onlineUsers.filter(u => u.status === 'online').length}명 온라인</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setMessengerExpanded(false)}
+                  className="p-2 rounded-xl hover:bg-white/20 text-white transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* 온라인 사용자 목록 */}
+            <div className="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50">
+              <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3">온라인 사용자</h4>
+              <div className="flex space-x-2">
+                {onlineUsers.map((user) => (
+                  <div key={user.id} className="flex items-center space-x-2">
+                    <div className="relative">
+                      <span className="text-2xl">{user.avatar}</span>
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
+                        user.status === 'online' ? 'bg-green-500' : 
+                        user.status === 'away' ? 'bg-yellow-500' : 'bg-gray-500'
+                      }`}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* 메시지 영역 */}
+            <div className="h-80 overflow-auto p-6 space-y-4">
+              {messages.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 rounded-2xl flex items-center justify-center">
+                    <UserGroupIcon className="w-8 h-8 text-green-600 dark:text-green-400" />
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 mb-2">팀원들과 대화를 시작하세요!</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-500">파일을 우클릭해서 공유할 수도 있어요</p>
+                </div>
+              ) : (
+                messages.map((msg) => (
+                  <div key={msg.id} className={`flex ${msg.sender === '나' ? 'justify-end' : 'justify-start'}`}>
+                    <div className="max-w-xs">
+                      {msg.sender !== '나' && (
+                        <div className="flex items-center space-x-2 mb-1">
+                          <span className="text-lg">{msg.avatar}</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">{msg.sender}</span>
+                        </div>
+                      )}
+                      <div className={`px-4 py-3 rounded-2xl ${
+                        msg.sender === '나' 
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                      }`}>
+                        {msg.type === 'file' ? (
+                          <div className="flex items-center space-x-2">
+                            <DocumentIcon className="w-4 h-4" />
+                            <span className="text-sm font-medium">{msg.file?.name}</span>
+                          </div>
+                        ) : (
+                          <p className="text-sm">{msg.content}</p>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 px-2">
+                        {msg.timestamp.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            
+            {/* 메시지 입력 */}
+            <div className="p-6 border-t border-gray-200/50 dark:border-gray-700/50">
+              <div className="flex space-x-3">
+                <input
+                  type="text"
+                  value={messengerInput}
+                  onChange={(e) => setMessengerInput(e.target.value)}
+                  placeholder="메시지를 입력하세요..."
+                  className="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                />
+                <button
+                  onClick={handleSendMessage}
+                  disabled={!messengerInput.trim()}
+                  className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl hover:from-green-600 hover:to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-all shadow-lg hover:shadow-xl"
+                >
+                  전송
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* AI 채팅 패널 */}
+        {aiChatExpanded && (
+          <div className="fixed bottom-6 right-6 w-96 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-purple-600 to-blue-600">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
+                    <SparklesSolidIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white">AI 코파일럿</h3>
+                    <p className="text-xs text-white/80">파일 관리를 도와드립니다</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setAiChatExpanded(false)}
+                  className="p-2 rounded-xl hover:bg-white/20 text-white transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            
+            <div className="h-80 overflow-auto p-6 space-y-4">
+              {chatHistory.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 rounded-2xl flex items-center justify-center">
+                    <SparklesIcon className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">고급 AI 코파일럿이 파일 관리를 도와드립니다!</p>
+                  <div className="grid grid-cols-1 gap-2 max-w-xs mx-auto text-xs">
+                    <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 rounded-xl">
+                      <p className="font-semibold text-blue-700 dark:text-blue-300">파일 검색</p>
+                      <p className="text-blue-600 dark:text-blue-400">"최근 사진을 찾아줘"</p>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl">
+                      <p className="font-semibold text-green-700 dark:text-green-300">파일 정리</p>
+                      <p className="text-green-600 dark:text-green-400">"파일들을 타입별로 정리해줘"</p>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/30 dark:to-red-900/30 rounded-xl">
+                      <p className="font-semibold text-orange-700 dark:text-orange-300">내용 분석</p>
+                      <p className="text-orange-600 dark:text-orange-400">"이 문서를 요약해줘"</p>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl">
+                      <p className="font-semibold text-purple-700 dark:text-purple-300">위치 안내</p>
+                      <p className="text-purple-600 dark:text-purple-400">"프로젝트 폴더가 어디에 있어?"</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                chatHistory.map((msg, index) => (
+                  <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-xs px-4 py-3 rounded-2xl whitespace-pre-wrap ${
+                      msg.role === 'user' 
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' 
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                    }`}>
+                      <p className="text-sm">{msg.content}</p>
+                      {msg.actions && msg.actions.length > 0 && (
+                        <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                          <p className="text-xs opacity-75">실행된 액션: {msg.actions.length}개</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+              
+              {/* AI 사고 중 표시 */}
+              {aiThinking && (
+                <div className="flex justify-start">
+                  <div className="max-w-xs px-4 py-3 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                      <span className="text-sm text-purple-600 dark:text-purple-400">사고 중...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* AI 제안사항 */}
+              {aiSuggestions.length > 0 && (
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">추천 질문:</p>
+                  <div className="space-y-2">
+                    {aiSuggestions.slice(0, 3).map((suggestion, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setChatInput(suggestion);
+                          setAiSuggestions([]);
+                        }}
+                        className="w-full text-left p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-xs text-purple-700 dark:text-purple-300 transition-colors"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="p-6 border-t border-gray-200/50 dark:border-gray-700/50">
+              <div className="flex space-x-3">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="자연어로 파일 관리를 요청하세요... (예: '사진 파일들을 정리해줘', '최근 문서를 찾아줘')"
+                  className="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendChat()}
+                />
+                <button
+                  onClick={handleSendChat}
+                  disabled={!chatInput.trim()}
+                  className="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-2xl hover:from-purple-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-all shadow-lg hover:shadow-xl"
+                >
+                  전송
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 고급 검색 패널 */}
+        {advancedSearchOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 w-96 max-h-[80vh] overflow-auto">
+              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                    <MagnifyingGlassIcon className="w-6 h-6 mr-2 text-green-500" />
+                    고급 검색
+                  </h3>
+                  <button
+                    onClick={() => setAdvancedSearchOpen(false)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    파일명 검색
+                  </label>
+                  <input
+                    type="text"
+                    value={searchParams.filename}
+                    onChange={(e) => setSearchParams(prev => ({ ...prev, filename: e.target.value }))}
+                    placeholder="파일명을 입력하세요..."
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    파일 확장자
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['jpg', 'pdf', 'docx', 'mp4', 'txt', 'zip'].map(ext => (
+                      <button
+                        key={ext}
+                        onClick={() => {
+                          setSearchParams(prev => ({
+                            ...prev,
+                            extensions: prev.extensions.includes(ext)
+                              ? prev.extensions.filter(e => e !== ext)
+                              : [...prev.extensions, ext]
+                          }));
+                        }}
+                        className={`px-3 py-2 rounded-lg border text-sm transition-colors ${
+                          searchParams.extensions.includes(ext)
+                            ? 'bg-green-100 border-green-300 text-green-800 dark:bg-green-900/20 dark:border-green-600 dark:text-green-400'
+                            : 'border-gray-200 dark:border-gray-700 hover:bg-green-50 dark:hover:bg-green-900/20 hover:border-green-300 dark:hover:border-green-600'
+                        }`}
+                      >
+                        .{ext}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      최소 크기
+                    </label>
+                    <select 
+                      value={searchParams.minSize}
+                      onChange={(e) => setSearchParams(prev => ({ ...prev, minSize: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    >
+                      <option value="">제한 없음</option>
+                      <option value="1024">1KB</option>
+                      <option value="1048576">1MB</option>
+                      <option value="10485760">10MB</option>
+                      <option value="104857600">100MB</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      최대 크기
+                    </label>
+                    <select 
+                      value={searchParams.maxSize}
+                      onChange={(e) => setSearchParams(prev => ({ ...prev, maxSize: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    >
+                      <option value="">제한 없음</option>
+                      <option value="1048576">1MB</option>
+                      <option value="10485760">10MB</option>
+                      <option value="104857600">100MB</option>
+                      <option value="1073741824">1GB</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    수정 날짜
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input 
+                      type="date" 
+                      value={searchParams.startDate}
+                      onChange={(e) => setSearchParams(prev => ({ ...prev, startDate: e.target.value }))}
+                      className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" 
+                    />
+                    <input 
+                      type="date" 
+                      value={searchParams.endDate}
+                      onChange={(e) => setSearchParams(prev => ({ ...prev, endDate: e.target.value }))}
+                      className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" 
+                    />
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={handleAdvancedSearch}
+                  disabled={searchLoading}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-medium hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {searchLoading ? '검색 중...' : '검색 실행'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 백업 관리 패널 */}
+        {backupPanelOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 w-[32rem] max-h-[80vh] overflow-auto">
+              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                    <CloudIcon className="w-6 h-6 mr-2 text-purple-500" />
+                    백업 관리
+                  </h3>
+                  <button
+                    onClick={() => setBackupPanelOpen(false)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={handleCreateBackup}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                  >
+                    <CloudIcon className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">새 백업 생성</div>
+                  </button>
+                  <button 
+                    onClick={handleRestoreBackup}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                  >
+                    <ArrowPathIcon className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">백업 복원</div>
+                  </button>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">백업 히스토리</h4>
+                  <div className="space-y-2">
+                    <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">전체 시스템 백업</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">2024-01-15 14:30</div>
+                      </div>
+                      <div className="text-sm text-green-600 dark:text-green-400">완료</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">자동 백업 설정</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700 dark:text-gray-300">자동 백업 활성화</span>
+                      <button className="w-12 h-6 bg-purple-500 rounded-full relative">
+                        <div className="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                      </button>
+                    </div>
+                    <select className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                      <option>매일</option>
+                      <option>매주</option>
+                      <option>매월</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 보안 관리 패널 */}
+        {securityPanelOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 w-[32rem] max-h-[80vh] overflow-auto">
+              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                    <ShieldCheckIcon className="w-6 h-6 mr-2 text-red-500" />
+                    보안 관리
+                  </h3>
+                  <button
+                    onClick={() => setSecurityPanelOpen(false)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={() => selectedFiles.length > 0 && handleEncryptFile(selectedFiles[0].path)}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  >
+                    <ShieldCheckIcon className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">파일 암호화</div>
+                  </button>
+                  <button 
+                    onClick={loadEncryptedFiles}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
+                  >
+                    <LightBulbIcon className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">암호화 파일 목록</div>
+                  </button>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">암호화된 파일</h4>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {encryptedFiles.length === 0 ? (
+                      <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
+                        암호화된 파일이 없습니다.
+                      </div>
+                    ) : (
+                      encryptedFiles.map((file, index) => (
+                        <div key={index} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                          <div>
+                            <div className="font-medium text-gray-900 dark:text-gray-100">{file.name}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{file.path}</div>
+                          </div>
+                          <button 
+                            onClick={() => handleDecryptFile(file.path)}
+                            className="px-3 py-1 bg-red-500 text-white rounded-lg text-xs hover:bg-red-600 transition-colors"
+                          >
+                            복호화
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 최적화 패널 */}
+        {optimizePanelOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 w-[32rem] max-h-[80vh] overflow-auto">
+              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                    <BoltIcon className="w-6 h-6 mr-2 text-yellow-500" />
+                    시스템 최적화
+                  </h3>
+                  <button
+                    onClick={() => setOptimizePanelOpen(false)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={loadOptimizeData}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors"
+                  >
+                    <DocumentDuplicateIcon className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">중복 파일 검색</div>
+                  </button>
+                  <button className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                    <TrashIcon className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">임시 파일 정리</div>
+                  </button>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">중복 파일 ({duplicateFiles.length}개)</h4>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {duplicateFiles.length === 0 ? (
+                      <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
+                        중복 파일을 검색하려면 위 버튼을 클릭하세요.
+                      </div>
+                    ) : (
+                      duplicateFiles.map((file, index) => (
+                        <div key={index} className="p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{file.name}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{formatFileSize(file.size)} • {file.duplicates}개 중복</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 클라우드 연동 패널 */}
+        {cloudPanelOpen && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center">
+            <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 w-[32rem] max-h-[80vh] overflow-auto">
+              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                    <GlobeAltIcon className="w-6 h-6 mr-2 text-indigo-500" />
+                    클라우드 스토리지
+                  </h3>
+                  <button
+                    onClick={() => setCloudPanelOpen(false)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-3 gap-4">
+                  <button 
+                    onClick={() => handleCloudSync('googledrive')}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                  >
+                    <CloudIcon className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                    <div className="text-xs font-medium text-gray-900 dark:text-gray-100">Google Drive</div>
+                  </button>
+                  <button 
+                    onClick={() => handleCloudSync('aws')}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
+                  >
+                    <CloudIcon className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                    <div className="text-xs font-medium text-gray-900 dark:text-gray-100">AWS S3</div>
+                  </button>
+                  <button 
+                    onClick={() => handleCloudSync('dropbox')}
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                  >
+                    <CloudIcon className="w-8 h-8 text-indigo-500 mx-auto mb-2" />
+                    <div className="text-xs font-medium text-gray-900 dark:text-gray-100">Dropbox</div>
+                  </button>
+                </div>
+                
+                <div>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">동기화 상태</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="text-gray-900 dark:text-gray-100">Google Drive</span>
+                      </div>
+                      <span className="text-green-600 dark:text-green-400 text-sm">연결됨</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                        <span className="text-gray-900 dark:text-gray-100">AWS S3</span>
+                      </div>
+                      <button 
+                        onClick={() => handleCloudUpload('aws')}
+                        className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+                      >
+                        연결
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 사용자 프로필 팝업 메뉴 */}
+        {userProfilePopup.show && userProfilePopup.user && (
+          <div 
+            className="fixed z-[70] bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 min-w-[280px] p-4"
+            style={{ 
+              left: `${userProfilePopup.x}px`, 
+              top: `${userProfilePopup.y}px`,
+              transform: userProfilePopup.x > window.innerWidth - 300 ? 'translateX(-100%)' : 'none'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 사용자 정보 헤더 */}
+            <div className="flex items-center space-x-3 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="relative">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${userProfilePopup.user.avatarColor} flex items-center justify-center text-white font-bold shadow-lg`}>
+                  {userProfilePopup.user.avatar}
+                </div>
+                <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                  userProfilePopup.user.status === 'online' ? 'bg-green-500' : 
+                  userProfilePopup.user.status === 'away' ? 'bg-yellow-500' : 
+                  userProfilePopup.user.status === 'busy' ? 'bg-red-500' : 'bg-gray-400'
+                }`}></div>
+              </div>
+              <div className="flex-1">
+                <div className="font-bold text-gray-900 dark:text-gray-100">{userProfilePopup.user.name}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{userProfilePopup.user.title}</div>
+                <div className={`text-xs font-medium ${
+                  userProfilePopup.user.status === 'online' ? 'text-green-600 dark:text-green-400' : 
+                  userProfilePopup.user.status === 'away' ? 'text-yellow-600 dark:text-yellow-400' : 
+                  userProfilePopup.user.status === 'busy' ? 'text-red-600 dark:text-red-400' : 'text-gray-400'
+                }`}>
+                  {userProfilePopup.user.status === 'online' ? '온라인' : 
+                   userProfilePopup.user.status === 'away' ? '자리비움' : 
+                   userProfilePopup.user.status === 'busy' ? '바쁨' : '오프라인'}
+                </div>
+              </div>
+            </div>
+
+            {/* 현재 활동 정보 */}
+            {userProfilePopup.user.currentActivity && (
+              <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                <div className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
+                  📄 현재 활동
+                </div>
+                <div className="text-sm text-blue-700 dark:text-blue-300 truncate">
+                  {userProfilePopup.user.currentActivity.file}
+                </div>
+                <div className="text-xs text-blue-600 dark:text-blue-400">
+                  {userProfilePopup.user.currentActivity.action} • {formatTimeAgo(userProfilePopup.user.currentActivity.timestamp)}
+                </div>
+              </div>
+            )}
+
+            {/* 액션 버튼들 */}
+            <div className="space-y-2">
+              <button
+                onClick={() => sendMessageToUser(userProfilePopup.user.id, `안녕하세요 ${userProfilePopup.user.name}님!`)}
+                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-left"
+              >
+                <ChatBubbleLeftRightIcon className="w-5 h-5 text-blue-500" />
+                <span className="text-gray-900 dark:text-gray-100">메시지 보내기</span>
+              </button>
+              
+              {currentUserActivity.viewingFile && (
+                <button
+                  onClick={() => shareFileWithUser(userProfilePopup.user.id, currentUserActivity.viewingFile)}
+                  className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors text-left"
+                >
+                  <DocumentIcon className="w-5 h-5 text-green-500" />
+                  <span className="text-gray-900 dark:text-gray-100">현재 파일 공유</span>
+                </button>
+              )}
+              
+              <button
+                onClick={() => {
+                  console.log(`${userProfilePopup.user.name}님과 화상 통화 시작`);
+                  setUserProfilePopup({ show: false, user: null, x: 0, y: 0 });
+                }}
+                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors text-left"
+              >
+                <VideoCameraIcon className="w-5 h-5 text-purple-500" />
+                <span className="text-gray-900 dark:text-gray-100">화상 통화</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  console.log(`${userProfilePopup.user.name}님의 상세 프로필 보기`);
+                  setUserProfilePopup({ show: false, user: null, x: 0, y: 0 });
+                }}
+                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+              >
+                <EyeIcon className="w-5 h-5 text-gray-500" />
+                <span className="text-gray-900 dark:text-gray-100">프로필 보기</span>
+              </button>
+            </div>
+          </div>
+        )}
+        </div>
+      </div>
+      
+    </div>
+  );
+}

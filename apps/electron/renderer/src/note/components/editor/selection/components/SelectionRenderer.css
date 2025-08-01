@@ -1,0 +1,197 @@
+/**
+ * 선택 시각적 피드백 스타일
+ */
+
+/* 선택 중 상태 */
+.selection-active {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 엔진별 커서 스타일 */
+.selection-engine-prosemirror {
+  cursor: text;
+}
+
+.selection-engine-native {
+  cursor: text;
+}
+
+.selection-engine-hybrid {
+  cursor: crosshair;
+}
+
+.selection-engine-drag .selection-active {
+  cursor: crosshair;
+}
+
+/* 선택된 블록 하이라이트 */
+.block-selected {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
+}
+
+.block-selected:hover {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+/* 드래그 선택 오버레이 */
+.selection-drag-overlay {
+  border-radius: 2px;
+  transition: all 0.1s ease-out;
+  backdrop-filter: blur(1px);
+}
+
+/* 선택 상태 애니메이션 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+}
+
+/* 선택 표시기 */
+.selection-indicator {
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+/* 디버그 패널 */
+.selection-debug-panel {
+  pointer-events: none;
+  line-height: 1.4;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.selection-debug-panel > div {
+  margin-bottom: 2px;
+}
+
+.selection-debug-panel > div:last-child {
+  margin-bottom: 0;
+}
+
+/* 텍스트 선택 스타일 */
+.text-selection-active ::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+.text-selection-active ::-moz-selection {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+/* 크로스 블록 텍스트 선택 */
+.cross-block-selection {
+  position: relative;
+}
+
+.cross-block-selection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(59, 130, 246, 0.05) 50%,
+    rgba(59, 130, 246, 0.1) 100%
+  );
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* 호버 상태 */
+.block-selected:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .block-selected {
+    background-color: rgba(96, 165, 250, 0.15) !important;
+    border-color: rgba(96, 165, 250, 0.4) !important;
+  }
+
+  .block-selected:hover {
+    background-color: rgba(96, 165, 250, 0.2) !important;
+    border-color: rgba(96, 165, 250, 0.5) !important;
+  }
+
+  .selection-drag-overlay {
+    background-color: rgba(96, 165, 250, 0.1);
+    border-color: rgba(96, 165, 250, 0.3);
+  }
+
+  .text-selection-active ::selection {
+    background-color: rgba(96, 165, 250, 0.3);
+  }
+
+  .text-selection-active ::-moz-selection {
+    background-color: rgba(96, 165, 250, 0.3);
+  }
+
+  .cross-block-selection::before {
+    background: linear-gradient(
+      90deg,
+      rgba(96, 165, 250, 0.1) 0%,
+      rgba(96, 165, 250, 0.05) 50%,
+      rgba(96, 165, 250, 0.1) 100%
+    );
+  }
+}
+
+/* 접근성: 고대비 모드 */
+@media (prefers-contrast: high) {
+  .block-selected {
+    border-width: 2px !important;
+    border-color: rgba(59, 130, 246, 0.8) !important;
+  }
+
+  .selection-drag-overlay {
+    border-width: 2px;
+    border-color: rgba(59, 130, 246, 0.8);
+  }
+}
+
+/* 모션 감소 설정 */
+@media (prefers-reduced-motion: reduce) {
+  .block-selected,
+  .selection-drag-overlay,
+  .selection-indicator {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .block-selected:hover {
+    transform: none !important;
+  }
+}

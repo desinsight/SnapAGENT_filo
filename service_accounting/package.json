@@ -1,0 +1,84 @@
+{
+  "name": "accounting-service-backend",
+  "version": "1.0.0",
+  "description": "AI-First Accounting & Tax Management Service Backend API - 세무, 회계, 급여 관리 서비스",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "docs": "swagger-jsdoc -d swaggerDef.js src/routes/*.js > swagger.json"
+  },
+  "keywords": [
+    "accounting",
+    "tax",
+    "payroll",
+    "finance",
+    "mcp",
+    "ai-service",
+    "backend",
+    "api"
+  ],
+  "author": "Web MCP Server Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "joi": "^17.11.0",
+    "winston": "^3.11.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "compression": "^1.7.4",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.0",
+    "tesseract.js": "^5.0.3",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "node-cron": "^3.0.3",
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
+    "puppeteer": "^21.6.1",
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "redis": "^4.6.10",
+    "bull": "^4.12.0",
+    "nodemailer": "^6.9.7",
+    "twilio": "^4.19.0",
+    "stripe": "^14.7.0",
+    "plaid": "^18.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.55.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "@types/jest": "^29.5.8"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/web-mcp-server/accounting-service"
+  },
+  "bugs": {
+    "url": "https://github.com/web-mcp-server/accounting-service/issues"
+  },
+  "homepage": "https://github.com/web-mcp-server/accounting-service#readme"
+} 

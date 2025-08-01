@@ -1,0 +1,64 @@
+{
+  "name": "@web-mcp/electron-app",
+  "version": "1.0.0",
+  "description": "Web MCP Server - 일렉트론 데스크톱 앱",
+  "main": "main/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:renderer\" \"wait-on http://localhost:5174 && electron .\"",
+    "dev:renderer": "vite",
+    "build": "npm run build:renderer && electron-builder",
+    "build:renderer": "vite build renderer",
+    "electron": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@tailwindcss/postcss": "^4.1.11",
+    "axios": "^1.6.5",
+    "chart.js": "^4.5.0",
+    "file-icon": "^5.1.1",
+    "prop-types": "^15.8.1",
+    "prosemirror-commands": "^1.7.1",
+    "prosemirror-dropcursor": "^1.8.2",
+    "prosemirror-gapcursor": "^1.3.2",
+    "prosemirror-history": "^1.4.1",
+    "prosemirror-inputrules": "^1.5.0",
+    "prosemirror-keymap": "^1.2.3",
+    "prosemirror-model": "^1.25.2",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-tables": "^1.7.1",
+    "prosemirror-utils": "^1.2.2",
+    "prosemirror-view": "^1.40.1",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-icons": "^4.12.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^8.2.2",
+    "electron": "^28.3.3",
+    "electron-builder": "^24.9.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.0",
+    "vite": "^5.0.10",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.webmcp.filemanager",
+    "productName": "Web MCP File Manager",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**/*",
+      "renderer/dist/**/*"
+    ]
+  }
+}

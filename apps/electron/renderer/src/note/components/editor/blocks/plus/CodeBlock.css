@@ -1,0 +1,66 @@
+/* CodeBlock CSS - Notion-style animations and utilities */
+
+.code-block {
+  /* 기본 코드 블록 스타일은 Tailwind로 처리 */
+}
+
+/* 복사 완료 토스트 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* 스크롤바 스타일링 (webkit 기반 브라우저) */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 3px;
+}
+
+.scrollbar-thumb-gray-300::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+.dark .scrollbar-thumb-gray-600::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+  border-radius: 3px;
+}
+
+.dark .scrollbar-thumb-gray-600::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280;
+}
+
+/* 코드 블록 호버 효과 */
+.code-block:hover {
+  /* Tailwind 클래스로 처리되므로 추가 스타일 불필요 */
+}
+
+/* 빈 상태 아이콘 애니메이션 */
+.code-block .empty-icon {
+  transition: transform 0.2s ease-out;
+}
+
+.code-block:hover .empty-icon {
+  transform: scale(1.05);
+}
