@@ -18,6 +18,7 @@ function createWindow() {
     height: 900,
     minWidth: 1000,
     minHeight: 600,
+    title: 'SnapCodex Platform',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -82,12 +83,71 @@ ipcMain.handle('list-drives', async () => {
           // 드라이브가 존재하지 않으면 무시
         }
       }
+    } else if (process.platform === 'darwin') {
+      // macOS 드라이브 및 마운트된 볼륨
+      // 루트 디렉토리
+      drives.push({
+        name: 'Macintosh HD',
+        path: '/',
+        type: 'drive'
+      });
+      
+      // /Volumes 디렉토리의 모든 마운트된 볼륨 (외장 드라이브, 네트워크 드라이브 등)
+      try {
+        const volumes = await fs.readdir('/Volumes');
+        for (const volume of volumes) {
+          const volumePath = path.join('/Volumes', volume);
+          try {
+            const stats = await fs.stat(volumePath);
+            if (stats.isDirectory()) {
+              drives.push({
+                name: volume,
+                path: volumePath,
+                type: 'drive'
+              });
+            }
+          } catch (error) {
+            console.warn(`볼륨 접근 실패: ${volume}`, error.message);
+          }
+        }
+      } catch (error) {
+        console.error('/Volumes 디렉토리 읽기 실패:', error);
+      }
+      
+      // 사용자 홈 디렉토리
+      const homeDir = os.homedir();
+      drives.push({
+        name: '홈',
+        path: homeDir,
+        type: 'folder'
+      });
+      
+      // iCloud Drive (사용자가 iCloud를 사용하는 경우)
+      const iCloudPath = path.join(homeDir, 'Library/Mobile Documents/com~apple~CloudDocs');
+      try {
+        await fs.access(iCloudPath);
+        drives.push({
+          name: 'iCloud Drive',
+          path: iCloudPath,
+          type: 'cloud'
+        });
+      } catch (error) {
+        // iCloud Drive가 없으면 무시
+      }
     } else {
-      // macOS/Linux 루트 디렉토리
+      // Linux 루트 디렉토리
       drives.push({
         name: '/',
         path: '/',
         type: 'drive'
+      });
+      
+      // 사용자 홈 디렉토리
+      const homeDir = os.homedir();
+      drives.push({
+        name: '홈',
+        path: homeDir,
+        type: 'folder'
       });
     }
     

@@ -355,7 +355,7 @@ const SettingsPanel = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Filo AI</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">SnapCodex AI</h2>
         <p className="text-gray-500 dark:text-gray-400">세계 최고의 AI 파일 매니저</p>
         <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">버전 1.0.0</p>
       </div>

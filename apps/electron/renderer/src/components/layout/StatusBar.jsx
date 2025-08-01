@@ -98,7 +98,7 @@ const StatusBar = ({
 
         {/* 시스템 정보 */}
         <div className="text-gray-500 dark:text-gray-500">
-          Web MCP v1.0.0
+          SnapCodex Platform v1.0.0
         </div>
       </div>
     </div>

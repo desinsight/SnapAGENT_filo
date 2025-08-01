@@ -8,7 +8,12 @@
       "Bash(sed:*)",
       "Bash(curl:*)",
       "Bash(npm start)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(npm ls:*)",
+      "Bash(ls:*)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }

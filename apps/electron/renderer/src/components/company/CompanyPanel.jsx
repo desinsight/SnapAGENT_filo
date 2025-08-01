@@ -11,7 +11,7 @@ const CompanyPanel = ({ onNotification }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Web MCP Solutions</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">SnapCodex Inc.</h1>
           <p className="text-xl text-gray-600 dark:text-gray-300">AI 기반 통합 업무 관리 솔루션</p>
         </div>
 
@@ -22,7 +22,7 @@ const CompanyPanel = ({ onNotification }) => {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">회사 소개</h2>
             <div className="space-y-4 text-gray-600 dark:text-gray-300">
               <p>
-                Web MCP Solutions는 AI 기술을 활용한 차세대 업무 관리 플랫폼을 제공하는 혁신적인 기술 기업입니다.
+                SnapCodex Inc.는 AI 기반 건축 설계 및 공사정보 자동화 플랫폼을 제공하는 혁신적인 기술 기업입니다.
               </p>
               <p>
                 파일 관리, 메신저, 일정 관리, 문서 작성 등 업무에 필요한 모든 기능을 하나의 통합 플랫폼에서 제공하여 

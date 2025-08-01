@@ -2,7 +2,7 @@
 
 ## 🎯 기여 방법
 
-Web MCP Server 프로젝트에 기여하고 싶으시다면 감사합니다! 이 문서는 기여 과정을 안내합니다.
+SnapCodex 플랫폼에 기여하고 싶으시다면 감사합니다! 이 문서는 기여 과정을 안내합니다.
 
 ## 📋 기여 전 체크리스트
 
@@ -18,8 +18,8 @@ Web MCP Server 프로젝트에 기여하고 싶으시다면 감사합니다! 이
 ```bash
 # GitHub에서 저장소 포크
 # 그 후 로컬에 클론
-git clone https://github.com/YOUR_USERNAME/web-mcp-server.git
-cd web-mcp-server
+git clone https://github.com/desinsight/SnapAGENT_filo.git
+cd SnapAGENT_filo
 ```
 
 ### 2. 의존성 설치
@@ -245,4 +245,4 @@ npm run test:coverage
 
 **감사합니다!** 🎉
 
-Web MCP Server 프로젝트에 기여해주셔서 감사합니다. 여러분의 기여가 프로젝트를 더욱 훌륭하게 만들어줍니다. 
+SnapCodex 플랫폼에 기여해주셔서 감사합니다. 여러분의 기여가 AI 기반 건축 설계 및 공사정보 자동화 플랫폼을 더욱 훌륭하게 만들어줍니다. 

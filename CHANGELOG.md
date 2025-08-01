@@ -1,6 +1,6 @@
 # 변경 로그 (Changelog)
 
-이 파일은 Web MCP Server 프로젝트의 모든 중요한 변경사항을 기록합니다.
+이 파일은 SnapCodex 플랫폼의 모든 중요한 변경사항을 기록합니다.
 
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.0.0/)를 따르며,
 이 프로젝트는 [Semantic Versioning](https://semver.org/lang/ko/)을 준수합니다.
@@ -8,6 +8,8 @@
 ## [Unreleased]
 
 ### 추가됨
+- SnapCodex 회사 정보 업데이트
+- AI 기반 건축 설계 및 공사정보 자동화 플랫폼 설정
 - macOS용 Electron 앱 개발 환경 구축
 - 통합 개발 환경 설정 (Workspaces)
 - 프로젝트 문서화 (README, CONTRIBUTING, CHANGELOG)

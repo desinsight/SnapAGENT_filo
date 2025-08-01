@@ -1,7 +1,7 @@
 {
-  "name": "@web-mcp/electron-app",
+  "name": "@snapcodex/electron-app",
   "version": "1.0.0",
-  "description": "Web MCP Server - 일렉트론 데스크톱 앱",
+  "description": "SnapCodex - AI 기반 건축 설계 및 공사정보 자동화 플랫폼",
   "main": "main/main.js",
   "type": "module",
   "scripts": {
@@ -18,7 +18,9 @@
     "@tailwindcss/postcss": "^4.1.11",
     "axios": "^1.6.5",
     "chart.js": "^4.5.0",
+    "diff": "^8.0.2",
     "file-icon": "^5.1.1",
+    "framer-motion": "^12.23.12",
     "prop-types": "^15.8.1",
     "prosemirror-commands": "^1.7.1",
     "prosemirror-dropcursor": "^1.8.2",
@@ -51,14 +53,27 @@
     "wait-on": "^7.2.0"
   },
   "build": {
-    "appId": "com.webmcp.filemanager",
-    "productName": "Web MCP File Manager",
+    "appId": "com.snapcodex.platform",
+    "productName": "SnapCodex Platform",
     "directories": {
       "output": "dist"
     },
     "files": [
       "main/**/*",
       "renderer/dist/**/*"
-    ]
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    }
   }
 }

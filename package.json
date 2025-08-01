@@ -1,7 +1,7 @@
 {
-  "name": "web-mcp-server",
+  "name": "snapcodex-platform",
   "version": "1.0.0",
-  "description": "Web MCP Server - 통합 개발 환경",
+  "description": "SnapCodex - AI 기반 건축 설계 및 공사정보 자동화 플랫폼",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -51,17 +51,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/web-mcp-server.git"
+    "url": "https://github.com/desinsight/SnapAGENT_filo.git"
   },
   "keywords": [
+    "snapcodex",
+    "ai",
+    "architecture",
+    "construction",
+    "automation",
     "electron",
     "react",
     "nodejs",
     "file-manager",
-    "ai",
     "desktop-app"
   ],
-  "author": "Your Name",
+  "author": "SnapCodex Inc.",
   "license": "MIT",
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
